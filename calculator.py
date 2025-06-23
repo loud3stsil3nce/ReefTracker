@@ -1,3 +1,6 @@
+TankVolumeImperial = None
+TankVolumeMetric = None
+
 def inchToCm(inches):
     return inches * 2.54
 
@@ -7,23 +10,62 @@ def cmToInch(cm):
 def inchToFeet(inches):
     return inches / 12
 
-def WaterVolumeCalculatorInches(L1, W1, H1): # inches
+def WaterVolumeCalculator(L1, W1, H1, unit="metric"):
+    if unit == 'metric':
+        # cm to m³: divide by 100 to get meters, then cubic meters × 1000 = liters
+        volume_m3 = (L1 / 100) * (W1 / 100) * (H1 / 100)
+        return volume_m3 * 1000  # Liters
+    else:
+        # Inches to feet
+        length = inchToFeet(L1)
+        width = inchToFeet(W1)
+        height = inchToFeet(H1)
+        CubicFeet = length * width * height
+        return CubicFeet * 7.48  # Gallons
     
-    length = inchToFeet(L1) # Convert to feet
-    width = inchToFeet(W1) # Convert to feet
-    height = inchToFeet(H1) # Convert to feet
-    CubicFeet = length * width * height 
-    # Calculate cubic feet
-    return CubicFeet*7.48 # Convert to gallons (1 cubic foot = 7.48 gallons)
+class RectangleTank:
+    def __init__(self, length, width, height, filledHeight = 0, unit='imperial'):
+        self.length = length
+        self.width = width
+        self.height = height
+        self.filledHeight = filledHeight
+        unit = unit.lower()
+        if unit == 'metric':
+            
+            self.metricVolume = WaterVolumeCalculator(length, width, height, unit='metric')
+            self.filledMetricVolume = WaterVolumeCalculator(length, width, filledHeight, unit='metric')
+            length_inch = cmToInch(length)
+            width_inch = cmToInch(width)
+            height_inch = cmToInch(height)
+            filledHeight_inch = cmToInch(filledHeight)
+            self.imperialVolume = WaterVolumeCalculator(length_inch, width_inch, height_inch, unit='imperial')
+            self.filledImperialVolume = WaterVolumeCalculator(length_inch, width_inch, filledHeight_inch, unit='imperial')
+        else:
+            self.imperialVolume = WaterVolumeCalculator(length, width, height, unit='imperial')
+            self.filledImperialVolume = WaterVolumeCalculator(length, width, filledHeight, unit='imperial')
+            
+            length_cm = inchToCm(length)
+            width_cm = inchToCm(width)
+            height_cm = inchToCm(height)
+            filledHeight_cm = inchToCm(filledHeight)
+            self.metricVolume = WaterVolumeCalculator(length_cm, width_cm, height_cm, unit='metric')
+            self.filledMetricVolume = WaterVolumeCalculator(length_cm, width_cm, filledHeight_cm, unit='metric')
+
+        
+        
+            
     
-def WaterVolumeCalculatorCm(L1, W1, H1): # centimeters
-    L2 = cmToInch(L1) # Convert to inches
-    W2 = cmToInch(W1) # Convert to inches   
-    H2 = cmToInch(H1) # Convert to inches
-    Gal = WaterVolumeCalculatorInches(L2, W2, H2) # Use the inches function
-    return Gal*3.785411784 # Convert to liters (1 gallon = 3.785411784 liters)
+    
+        
+        
+        
+        
+        
+        
     
 def main():
-    print(f"{WaterVolumeCalculatorInches(24, 12, 16):.2f} Gallons") # Example usage
-    print(f"{WaterVolumeCalculatorCm(60, 30, 40):.2f} Liters") # Example usage
+  
+    tank = RectangleTank(60, 30, 40, filledHeight=0, unit='metric') # Example usage
+    print(f"Tank Volume in Imperial: {tank.imperialVolume:.2f} Gallons") 
+    print(f"Tank Volume in Metric: {tank.metricVolume:.2f} Liters")                              
 main()
