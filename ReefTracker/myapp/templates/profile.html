@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %} Profile Page {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Profile Page</h1>
+    <p>Welcome, {{ user.username }}!</p>
+    
+    <h2>Your Details</h2>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
+        <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
+        <li class="list-group-item"><strong>First Name:</strong> {{ user.first_name }}</li>
+        <li class="list-group-item"><strong>Last Name:</strong> {{ user.last_name }}</li>
+
+{% endblock %}
