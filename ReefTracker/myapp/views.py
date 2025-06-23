@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse
-
+from .models import Aquariums
 # Create your views here.
 
 
@@ -14,3 +14,7 @@ def profile(request):
 
 def calculators(request):
     return render(request, "displaycalculators.html")
+
+def myaquariums(request):
+    tanks = Aquariums.objects.all()
+    return render(request, "myaquariums.html", {"aquariums": tanks})
