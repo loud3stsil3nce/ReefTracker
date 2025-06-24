@@ -12,7 +12,7 @@ def login(request):
 
 def register(request):
     form = RegisterForm(request.POST or None)
-    return render(request, "register.html")
+    return render(request, "register.html", {"form": form})
 
 
 def profile(request):
