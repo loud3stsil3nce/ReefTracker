@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %} Water Volume Calculator {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Water Volume Calculator</h1>
+    <p>Calculate the water volume of your aquarium.</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <label> 
+            <input type="radio" name="form_unit" value="imperial" {% if form_unit == "imperial" %}checked{% endif %}>
+             Unit: Imperial </label>
+             <input type="radio" name="form_unit" value="metric" {% if form_unit == "metric" %}checked{% endif %}>
+             Unit: Metric </label>
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Calculate</button>
+    </form>
+
+    {% if result %}
+        <div class="alert alert-success mt-4">
+            <strong>Calculated Water Volume:</strong> {{ result }} gallons
+        </div>
+    {% endif %}
+{% endblock %}

@@ -22,5 +22,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("myapp.urls")),
     path("profile/", include("myapp.urls")),  # Include profile URLs
-    
+    path("calculators/", include("myapp.urls")),  # Include calculators URLs
 ]

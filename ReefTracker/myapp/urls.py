@@ -8,5 +8,7 @@ urlpatterns = [
     path('register', views.register, name='register'),  
     path('profile', views.profile, name='profile'),
     path('calculators', views.calculators, name='calculators'),
-    path('profile/myaquariums', views.myaquariums, name='myaquariums')
+    path('calculators/watervolume', views.watervolumecalc, name='watervolumecalc'),
+    path('profile/myaquariums', views.myaquariums, name='myaquariums'),
+    
 ]
