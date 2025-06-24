@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from .models import Aquariums
 # Create your views here.
-
+from .forms import RegisterForm
 
 def home(request):
     return render(request, "home.html")
@@ -11,6 +11,7 @@ def login(request):
 
 
 def register(request):
+    form = RegisterForm(request.POST or None)
     return render(request, "register.html")
 
 
