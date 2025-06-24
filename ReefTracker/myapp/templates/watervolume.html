@@ -11,17 +11,17 @@
         {% csrf_token %}
         <label> 
             <input type="radio" name="form_unit" value="imperial" {% if form_unit == "imperial" %}checked{% endif %}>
-             Unit: Imperial </label>
+             Inches </label>
              <input type="radio" name="form_unit" value="metric" {% if form_unit == "metric" %}checked{% endif %}>
-             Unit: Metric </label>
+             Centimeters </label>
         {{ form|crispy }}
         <button type="submit" class="btn btn-primary">Calculate</button>
     </form>
 
     {% if result %}
         <div class="alert alert-success mt-4">
-            <strong>Calculated Total Water Volume:</strong> {{ totalvolume }} {{ unit }}
-            <strong>Calculated Filled Water Volume:</strong> {{ filledvolume }} {{ unit }}
+            <strong>Calculated Total Water Volume:</strong> {{ totalvolume|floatformat:2 }} {{ unit }}
+            <strong>Calculated Filled Water Volume:</strong> {{ filledvolume|floatformat:2 }} {{ unit }}
         </div>
     {% endif %}
 {% endblock %}

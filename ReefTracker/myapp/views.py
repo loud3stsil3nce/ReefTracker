@@ -45,11 +45,11 @@ def watervolumecalc(request):
             filled_height = cleaned.get("filledheight") or 0
             
             if filled_height > 0:
-                filledvolume = RectangleWaterVolumeCalculator(length, width, filled_height, unit=form_unit)
-                totalvolume = RectangleWaterVolumeCalculator(length, width, height, unit=form_unit)
+                filledvolume = round(RectangleWaterVolumeCalculator(length, width, filled_height, unit=form_unit), 2)
+                totalvolume = round(RectangleWaterVolumeCalculator(length, width, height, unit=form_unit), 2)
             else: 
-                totalvolume = RectangleWaterVolumeCalculator(length, width, height, unit=form_unit)
-                filledvolume = 0
+                totalvolume = round(RectangleWaterVolumeCalculator(length, width, height, unit=form_unit), 2)
+                filledvolume = 0.00
                 
             result = True
             return render(request, "watervolume.html", {"form_unit": form_unit, "form": form, "result": result, "totalvolume": totalvolume, "filledvolume": filledvolume, "unit": unit, "result": result})
