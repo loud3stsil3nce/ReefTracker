@@ -9,7 +9,7 @@
 
     <form action="" method="post" novalidate>
         {% csrf_token %}
-        {% crispy form %}
+        {% crispy|form %}
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 
