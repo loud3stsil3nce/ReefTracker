@@ -1,0 +1,8 @@
+# .render.yaml
+services:
+  - type: web
+    name: reeftracker
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn ReefTracker.wsgi:application"
+    rootDir: ReefTracker/ReefTracker
