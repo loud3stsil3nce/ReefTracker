@@ -11,7 +11,7 @@ def login(request):
 
 
 def register(request):
-    form = RegisterForm(request.POST or None)
+    context = {'form': RegisterForm()}
     return render(request, "register.html")
 
 
