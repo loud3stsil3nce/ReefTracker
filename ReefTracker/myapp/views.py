@@ -51,8 +51,8 @@ def watervolumecalc(request):
                 totalvolume = RectangleWaterVolumeCalculator(length, width, height, unit=form_unit)
                 filledvolume = 0
                 
-            
-            return render(request, "watervolume.html", {"form_unit": form_unit, "form": form, "result": result, "totalvolume": totalvolume, "filledvolume": filledvolume, "unit": unit})
+            result = True
+            return render(request, "watervolume.html", {"form_unit": form_unit, "form": form, "result": result, "totalvolume": totalvolume, "filledvolume": filledvolume, "unit": unit, "result": result})
     else:
         form = WaterVolumeFormImperial() if form_unit == "imperial" else WaterVolumeFormMetric()
     return render(request, "watervolume.html", {"form_unit": form_unit, "form": form, "result": result})
