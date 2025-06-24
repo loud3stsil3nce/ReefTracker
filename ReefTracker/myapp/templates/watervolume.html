@@ -20,7 +20,8 @@
 
     {% if result %}
         <div class="alert alert-success mt-4">
-            <strong>Calculated Water Volume:</strong> {{ result }} gallons
+            <strong>Calculated Total Water Volume:</strong> {{ totalvolume }} {{ unit }}
+            <strong>Calculated Filled Water Volume:</strong> {{ filledvolume }} {{ unit }}
         </div>
     {% endif %}
 {% endblock %}
