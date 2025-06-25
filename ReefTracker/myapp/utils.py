@@ -1,3 +1,4 @@
+#water volume calculator functions:
 def inchToCm(inches):
     return inches * 2.54
 
@@ -20,4 +21,10 @@ def RectangleWaterVolumeCalculator(L1, W1, H1, unit="metric"):
         height = inchToFeet(H1)
         CubicFeet = length * width * height
         return CubicFeet * 7.48  # Gallons
-        
+
+#calcium dosing functions:
+def calculate_dosage(targetPPMIncrease, waterVolumeL, SolutionPPM):
+    #Calculate the dosage in milliliters needed to achieve a target PPM increase
+    dosage_L = (targetPPMIncrease * waterVolumeL) / SolutionPPM
+    dosage_mL = dosage_L * 1000  # Convert liters to milliliters
+    return dosage_mL
