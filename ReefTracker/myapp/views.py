@@ -4,7 +4,7 @@ from .models import Aquariums
 from .forms import RegisterForm, LoginForm, WaterVolumeFormImperial, WaterVolumeFormMetric
 from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator
 def home(request):
-    return render(request, "mian/home.html")
+    return render(request, "main/home.html")
 
 def login(request):
     form = LoginForm(request.POST or None)
