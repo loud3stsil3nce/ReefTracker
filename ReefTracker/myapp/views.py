@@ -8,10 +8,6 @@ from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculato
 def home(request):
     return render(request, "main/home.html")
 
-def login(request):
-    form = LoginForm(request.POST or None)
-    return render(request, "registration/login.html", {"form": form})
-
 
 def sign_up(request):
     if request.method == "POST":
