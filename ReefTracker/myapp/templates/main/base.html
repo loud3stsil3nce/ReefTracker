@@ -27,13 +27,12 @@
         <a class="nav-link" href="/home">Home</a>
       </li>
       {% if user.is_authenticated %}
-      {% else %} 
-      <li class="nav-item"><a class="nav-link" href="/login" >Login</a>
-        
-        <li class="nav-item"><a class="nav-link" href="/profile">Profile</a>
-        <li class="nav-item"><a class="nav-link" href="/home">Logout</a>
-        <li class="nav-item"><a class="nav-link" href="/calculators">Calculators</a>
-    </ul>
+    <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+    <li class="nav-item"><a class="nav-link" href="/calculators">Calculators</a></li>
+{% else %}
+    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+{% endif %}
   </div>
         
 </nav>
