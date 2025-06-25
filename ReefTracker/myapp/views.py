@@ -3,7 +3,7 @@ from .models import Aquariums
 # Create your views here.
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, LoginForm, WaterVolumeFormImperial, WaterVolumeFormMetric
+from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric
 from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator
 def home(request):
     return render(request, "main/home.html")
