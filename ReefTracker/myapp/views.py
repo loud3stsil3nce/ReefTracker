@@ -20,13 +20,13 @@ def sign_up(request):
         form = RegisterForm()
     return render(request, "registration/sign_up.html", {"form": form})
 
-
+@login_required
 def profile(request):
     return render(request, "main/profile.html")
 
 def calculators(request):
     return render(request, "main/displaycalculators.html")
-
+@login_required
 def myaquariums(request):
     tanks = Aquariums.objects.all()
     return render(request, "main/myaquariums.html", {"aquariums": tanks})
