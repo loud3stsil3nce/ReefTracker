@@ -4,7 +4,7 @@ from .models import Aquariums
 from .forms import RegisterForm, LoginForm, WaterVolumeFormImperial, WaterVolumeFormMetric
 from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator
 def home(request):
-    return render(request, "home.html")
+    return render(request, "mian/home.html")
 
 def login(request):
     form = LoginForm(request.POST or None)
@@ -17,14 +17,14 @@ def register(request):
 
 
 def profile(request):
-    return render(request, "profile.html")
+    return render(request, "main/profile.html")
 
 def calculators(request):
-    return render(request, "displaycalculators.html")
+    return render(request, "main/displaycalculators.html")
 
 def myaquariums(request):
     tanks = Aquariums.objects.all()
-    return render(request, "myaquariums.html", {"aquariums": tanks})
+    return render(request, "main/myaquariums.html", {"aquariums": tanks})
 
 
 def watervolumecalc(request):
