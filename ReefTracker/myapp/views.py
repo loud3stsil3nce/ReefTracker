@@ -57,8 +57,8 @@ def watervolumecalc(request):
                 filledvolume = 0.00
                 
             result = True
-            return render(request, "watervolume.html", {"form_unit": form_unit, "form": form, "result": result, "totalvolume": totalvolume, "filledvolume": filledvolume, "unit": unit, "result": result})
+            return render(request, "main/watervolume.html", {"form_unit": form_unit, "form": form, "result": result, "totalvolume": totalvolume, "filledvolume": filledvolume, "unit": unit, "result": result})
     else:
         form = WaterVolumeFormImperial() if form_unit == "imperial" else WaterVolumeFormMetric()
-    return render(request, "watervolume.html", {"form_unit": form_unit, "form": form, "result": result})
+    return render(request, "main/watervolume.html", {"form_unit": form_unit, "form": form, "result": result})
         
