@@ -28,13 +28,14 @@
       </li>
       {% if user.is_authenticated %}
     <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+    <li class="nav-item"><a class="nav-link" href="/calculators">Calculators</a></li>
     <li class="nav-item">
       <form method="POST" action='/logout/' style="display: inline;">
         {% csrf_token %}
-        <button type="submit" class="nav-link btn btn-link" style="display:inline; padding: 0; border: none; background: none;">Logout</button>
+        <button type="submit" class="btn btn-link nav-link p-0 m-0 align-baseline" style="border: none; background: none;">Logout</button>
       </form>
       </li>
-    <li class="nav-item"><a class="nav-link" href="/calculators">Calculators</a></li>
+    
 {% else %}
     <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
 {% endif %}
