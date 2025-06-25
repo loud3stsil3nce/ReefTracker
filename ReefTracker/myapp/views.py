@@ -8,12 +8,12 @@ def home(request):
 
 def login(request):
     form = LoginForm(request.POST or None)
-    return render(request, "login.html", {"form": form})
+    return render(request, "registration/login.html", {"form": form})
 
 
 def register(request):
     form = RegisterForm(request.POST or None)
-    return render(request, "register.html", {"form": form})
+    return render(request, "registration/register.html", {"form": form})
 
 
 def profile(request):
