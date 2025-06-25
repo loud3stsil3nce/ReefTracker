@@ -4,8 +4,9 @@
 {% block content %}
 <div class="container">
     <h1 class="mt-4">Profile Page</h1>
+    {% if user.is_authenticated %}
     <p>Welcome, {{ user.username }}!</p>
-    
+    {% endif %}
     <h2>Your Details</h2>
     <ul class="list-group">
         <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
