@@ -1,0 +1,36 @@
+{% extends "main/base.html" %} {% block title %} Home Page {% endblock %}
+{% block content %}
+<section class="text-center py-5 bg-light">
+    <h1 class="display-4">Welcome to Reef Tracker!</h1>
+    <p class="lead">Track your reef tank's progress. Log, monitor, and grow your reef with confidence.</p>
+    {% if not user.is_authenticated %}
+    <a href="/register" class="btn btn-primary btn-lg mt-3">Get Started</a>
+    <a href="/login" class="btn btn-secondary btn-lg mt-3">Login</a>
+    {% endif %}
+    <hr class="my-4">
+</section>
+
+<section class="container py-5">
+  <div class="row text-center">
+    <div class="col-md-4">
+      <h3>📷 Photo Logs</h3>
+      <p>Upload tank, coral, or fish pictures to see growth over time.</p>
+    </div>
+    <div class="col-md-4">
+      <h3>🧪 Water Calculators</h3>
+      <p>Calculate tank volume, dosing, and salinity adjustments easily.</p>
+    </div>
+    <div class="col-md-4">
+      <h3>📈 Growth Tracking</h3>
+      <p>Track and categorize livestock to monitor changes month-by-month.</p>
+    </div>
+  </div>
+</section>
+
+<section class="container py-5 text-center">
+  <h2 class="mb-4">See Progress Like Never Before</h2>
+  <img src="https://placehold.co/400" class="img-fluid rounded shadow" alt="Tank progress preview">
+</section>
+
+
+{% endblock %}

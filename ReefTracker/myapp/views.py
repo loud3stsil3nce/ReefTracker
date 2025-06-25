@@ -5,6 +5,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric
 from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator
+def landing(request):
+    return render(request, "main/landing.html")
+@login_required
 def home(request):
     return render(request, "main/home.html")
 
