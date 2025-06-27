@@ -3,7 +3,8 @@ from .models import Aquariums
 # Create your views here.
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric
+from django.contrib.auth.models import User
+from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric, AddAquariumForm
 from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator
 def landing(request):
     return render(request, "main/landing.html")
@@ -31,8 +32,9 @@ def calculators(request):
     return render(request, "main/displaycalculators.html")
 @login_required
 def myaquariums(request):
-    tanks = Aquariums.objects.all()
-    return render(request, "main/myaquariums.html", {"aquariums": tanks})
+    aquariums = Aquariums.objects.all.filter(user=request.user)
+    form = AddAquariumForm(request.POST or None)
+    return render(request, "main/myaquariums.html", {"aquariums": aquariums, "form": form})
 
 
 def watervolumecalc(request):

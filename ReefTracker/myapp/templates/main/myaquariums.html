@@ -1,18 +1,52 @@
 {% extends "main/base.html" %}
+{% load crispy_forms_tags %}
 {% block title %} My Aquariums {% endblock %}
 
 {% block content %}
 <div class="container">
     <h1 class="mt-4">My Aquariums</h1>
     <p>Manage your aquariums and track their health.</p>
-
+    {% if aquariums %}
     <div class="row">
         {% for aquarium in aquariums %}
-        <div class="col-md-4 mb-4">
-            <div class="card">
+            <div class="col-md-4 mb-4">
+                <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ aquarium.name }}</h5>
-                    <p class="card-text">Type: {{ aquarium.type }}</p>
-                    <p class="card-text">Size: {{ aquarium.size }} gallons</p>
+                <h5 class="card-title">{{ aquarium.name }}</h5>
+                <p class="card-text">Type: {{ aquarium.type }}</p>
+                <p class="card-text">Size: {{ aquarium.size }} gallons</p>
+                </div>
+                </div>
+            </div>
         {% endfor %}
+    </div>
+    
+    {% else %}
+    
+        <div class="col-md-12">
+            <p>No aquariums found. Please add an aquarium to get started.</p>
+            
+        </div>
+    {% endif %}
+        <section>
+            <button onclick="toggleForm()" class="btn btn-primary">ADD</button>
+            <div id="addAquarium" style="display: none; margin-top: 1rem;">
+            <form method="POST" action="{% url 'add_aquarium' %}">
+                <h2>Aquarium Details</h2>
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+            </div>
+        </section>
+
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    function toggleForm() {
+        const formDiv = document.getElementById('addAquarium');
+        formDiv.style.display = formDiv.style.display === "none" ? "block" : "none";
+    }
+</script>
 {% endblock %}

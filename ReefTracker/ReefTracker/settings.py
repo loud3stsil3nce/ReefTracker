@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "127.0.0.1 localhost").split(" ")
 
 
 # Application definition
@@ -83,12 +83,13 @@ WSGI_APPLICATION = "ReefTracker.wsgi.application"
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://rafi:gWl7G2tRolYgAbBQQ0X2iq4VStqcIAXO@dpg-d1culrali9vc739j03t0-a.ohio-postgres.render.com/reeftracker_4kzl',
+        default='postgres://rafi:gWl7G2tRolYgAbBQQ0X2iq4VStqcIAXO@dpg-d1culrali9vc739j03t0-a.ohio-postgres.render.com/reeftracker_4kzl',
         conn_max_age=600
     )
 }
 database_url = os.environ.get("DATABASE_URL")
-DATABASES['default'] = dj_database_url.parse(database_url)  
+if database_url:
+    DATABASES['default'] = dj_database_url.parse(database_url)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

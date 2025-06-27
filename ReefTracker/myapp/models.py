@@ -1,19 +1,16 @@
 from django.db import models
-
+from django.contrib.auth.models import User
+from datetime import date
 # Create your models here.
 
 
 class Aquariums(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='aquariums')
     name = models.CharField(max_length=100)
     size = models.CharField(max_length=50)
     type = models.CharField(max_length=50)  # e.g., freshwater, saltwater
-    created_at = models.DateTimeField(auto_now_add=True)
-
-class User(models.Model):
-    username = models.CharField(max_length=150, unique=True)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128)  # Store hashed passwords
-    created_at = models.DateTimeField(auto_now_add=True)
-
+    start_date = models.DateField(default=date.today)
+    
+        
 
     
