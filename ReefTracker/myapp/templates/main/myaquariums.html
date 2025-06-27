@@ -31,7 +31,7 @@
         <section>
             <button onclick="toggleForm()" class="btn btn-primary">ADD</button>
             <div id="addAquarium" style="display: none; margin-top: 1rem;">
-            <form method="POST" action="{% url 'add_aquarium' %}">
+            <form method="POST" action="{% url 'myaquariums' %}">
                 <h2>Aquarium Details</h2>
                 {% csrf_token %}
                 {{ form|crispy }}
