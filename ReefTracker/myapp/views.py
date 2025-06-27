@@ -32,7 +32,7 @@ def calculators(request):
     return render(request, "main/displaycalculators.html")
 @login_required
 def myaquariums(request):
-    aquariums = Aquariums.objects.all.filter(user=request.user)
+    aquariums = Aquariums.objects.filter(user=request.user)
     form = AddAquariumForm(request.POST or None)
     return render(request, "main/myaquariums.html", {"aquariums": aquariums, "form": form})
 

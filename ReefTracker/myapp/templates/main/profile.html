@@ -13,5 +13,10 @@
         <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
         <li class="list-group-item"><strong>First Name:</strong> {{ user.first_name }}</li>
         <li class="list-group-item"><strong>Last Name:</strong> {{ user.last_name }}</li>
-        
+    </ul>
+    <h2 class="mt-4">Actions</h2>
+    <div>
+        <a href="{% url 'myaquariums' %}" class="btn btn-primary">Your Aquariums</a>
+    </div>
+
 {% endblock %}
