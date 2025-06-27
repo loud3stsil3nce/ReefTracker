@@ -30,12 +30,24 @@ def profile(request):
 
 def calculators(request):
     return render(request, "main/displaycalculators.html")
+
 @login_required
 def myaquariums(request):
+    if request.method == "POST":
+        form = AddAquariumForm(request.POST)
+        if form.is_valid():
+            aquarium = form.save(commit=False)
+            aquarium.user = request.user
+            aquarium.save()
+            return redirect("myaquariums")  # prevent form resubmission
+    else:
+        form = AddAquariumForm()
+    
     aquariums = Aquariums.objects.filter(user=request.user)
-    form = AddAquariumForm(request.POST or None)
-    return render(request, "main/myaquariums.html", {"aquariums": aquariums, "form": form})
-
+    return render(request, "main/myaquariums.html", {
+        "aquariums": aquariums,
+        "form": form
+    })
 
 def watervolumecalc(request):
     result = None
