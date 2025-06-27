@@ -9,14 +9,14 @@
     {% if aquariums %}
     <div class="row">
         {% for aquarium in aquariums %}
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4" style="width: 100%;">
                 <div class="card">
                 <div class="card-body">
                 <h5 class="card-title">{{ aquarium.name }}</h5>
                 <p class="card-text">Type: {{ aquarium.type }}</p>
                 <p class="card-text">Size: {{ aquarium.size }} </p>
                 </div>
-                <div class="card-footer" style="display: flex; justify-content: space-between;">
+                <div class="card-footer" style="display: flex; justify-content: space-between; width: 100%;">
                     <a class="btn btn-primary" href="{% url 'aquariumview' aquarium.id %}">View Details</a>
                     
                 </div>
