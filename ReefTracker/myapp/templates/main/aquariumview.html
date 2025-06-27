@@ -1,10 +1,10 @@
 {% extends "main/base.html" %}
 {% load crispy_forms_tags %}
-{% block title %}{{ aquarium.name }}{% endblock %}
+{% block title %}{{ selectedaquarium.name }}{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1 class="mt-4">{{aquarium.name}}</h1>
+    <h1 class="mt-4">{{selectedaquarium.name}}</h1>
     <p>Manage your aquarium information.</p>
     {% if selectedaquarium %}
     <div class="row">
@@ -12,13 +12,13 @@
         <div class="card col-md-4 mb-4">
                 
             <div class="card-body">
-                <h5 class="card-title">{{ aquarium.name }}</h5>
-                <p class="card-text">Type: {{ aquarium.type }}</p>
-                <p class="card-text">Size: {{ aquarium.size }} gallons</p>
-                <p class="card-text">Start Date: {{ aquarium.start_date }}</p>
+                <h5 class="card-title">{{ selectedaquarium.name }}</h5>
+                <p class="card-text">Type: {{ selectedaquarium.type }}</p>
+                <p class="card-text">Size: {{ selectedaquarium.size }}</p>
+                <p class="card-text">Start Date: {{ selectedaquarium.start_date }}</p>
             </div>
             <div class="card-footer" style="display: flex; justify-content: space-between;">
-                    <button class="btn btn-secondary" onclick="toggleForm()">Edit</button>
+                    
                     <button type="submit" class="btn btn-danger">Delete</button>   
         </div>       
     </div>
@@ -45,10 +45,5 @@
 </div>
 {% endblock %}
 {% block script %}
-<script>
-    function toggleForm() {
-        const formDiv = document.getElementById('addAquarium');
-        formDiv.style.display = formDiv.style.display === "none" ? "block" : "none";
-    }
-</script>
+
 {% endblock %}
