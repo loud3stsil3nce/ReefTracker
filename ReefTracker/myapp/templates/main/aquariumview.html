@@ -1,33 +1,32 @@
 {% extends "main/base.html" %}
 {% load crispy_forms_tags %}
-{% block title %} My Aquariums {% endblock %}
+{% block title %}{{ aquarium.name }}{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1 class="mt-4">My Aquariums</h1>
-    <p>Manage your aquariums and track their health.</p>
-    {% if aquariums %}
+    <h1 class="mt-4">{{aquarium.name}}</h1>
+    <p>Manage your aquarium information.</p>
+    {% if selectedaquarium %}
     <div class="row">
-        {% for aquarium in aquariums %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                <div class="card-body">
+        
+        <div class="card col-md-4 mb-4">
+                
+            <div class="card-body">
                 <h5 class="card-title">{{ aquarium.name }}</h5>
                 <p class="card-text">Type: {{ aquarium.type }}</p>
                 <p class="card-text">Size: {{ aquarium.size }} gallons</p>
-                </div>
-                <div class="card-footer" style="display: flex; justify-content: space-between;">
-                    <a class="btn btn-primary" href="{% url 'aquariumview' aquarium.id %}">View Details</a>
-                    
-                </div>
+                <p class="card-text">Start Date: {{ aquarium.start_date }}</p>
             </div>
-        {% endfor %}
+            <div class="card-footer" style="display: flex; justify-content: space-between;">
+                    <button class="btn btn-secondary" onclick="toggleForm()">Edit</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>   
+        </div>       
     </div>
     
     {% else %}
     
         <div class="col-md-12">
-            <p>No aquariums found. Please add an aquarium to get started.</p>
+            <p>No aquariums found. Please search a valid aquarium.</p>
             
         </div>
     {% endif %}

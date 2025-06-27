@@ -49,6 +49,17 @@ def myaquariums(request):
         "form": form
     })
 
+@login_required
+def aquariumview(request, aquarium_id):
+    
+    
+    try:
+        selectedaquarium = Aquariums.objects.get(id=aquarium_id, user=request.user)
+    except Aquariums.DoesNotExist:
+        return HttpResponse("Aquarium not found.", status=404)
+    
+    return render(request, "main/aquariumview.html", {"selectedaquarium": selectedaquarium})
+
 def watervolumecalc(request):
     result = None
     form_unit = request.POST.get("form_unit", "imperial")
