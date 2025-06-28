@@ -2,10 +2,10 @@
 {% block title %}Calculators{% endblock %}
 
 {% block content %}
-<div class="container">
+
     <h1 class="mt-4">Calculators</h1>
     <p>Use the calculators below to perform various calculations related to reef health.</p>
-    <div class="row">
+    <div class="row" style="display: flex; justify-content: space-between;">
         <div class="col-md-4">
             <h2>Water Volume Calculator</h2>
             <p>Description of Calculator 1.</p>
@@ -21,5 +21,6 @@
             <p>Description of Calculator 3.</p>
             <a href="{% url 'calculators' %}" class="btn btn-primary">Go to Calculator 3</a>
         </div>
+    </div>
 
 {% endblock %}

@@ -1,10 +1,88 @@
-{% extends "main/base.html" %} {% block title %} Home Page {% endblock %}
-{% block content %}
-<div class="jumbotron">
-    <h1 class="display-4">Welcome to Reef Tracker!</h1>
-    <p class="lead">Your one-stop solution for tracking and managing reef health.</p>
+{% extends "main/base.html" %} {% block title %} Home Page {% endblock %} {%
+{% load crispy_forms_tags %} {% block content %}
+<div
+  class="container-fluid min-vh-100 d-flex flex-column"
+  style="overflow: visible"
+>
+  {% if user.is_authenticated %}
 
-    <hr class="my-4">
+  <!-- Welcome Section -->
+  <section style="background-color: rgb(230, 239, 246); width: 100%">
+    <h1 class="small">Welcome, {{ user.username }}!</h1>
+  </section>
+
+  <!-- DASHBOARD -->
+  <div class="d-flex flex-column flex-grow-1">
+    <h2 class="p-2">DASHBOARD</h2>
+    <p class="p-2">Manage your aquariums and track their health.</p>
+
+    <!-- Split Columns Section -->
+    <div class="d-flex flex-row flex-wrap w-100 gap-4" style="padding-bottom: 10px">
+      <!-- Left Column -->
+      <div class="flex-fill" style="min-width: 300px">
+        <div class="p-3 bg-white rounded shadow-sm">
+          <p>You currently have {{ aquariums|length }} aquarium(s).</p>
+          <button onclick="toggleForm()" class="btn btn-primary mb-3">
+            ADD
+          </button>
+
+          <div id="addAquarium" style="display: none">
+            <form method="POST" action="{% url 'home' %}">
+              {% csrf_token %}
+              <h4>Aquarium Details</h4>
+              {{ form|crispy }}
+              <button type="submit" class="btn btn-primary mt-2">
+                Register Aquarium
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="flex-fill" style="min-width: 300px">
+        <div class="p-3 bg-secondary text-white rounded shadow-sm">
+          <p>Recent Activity -- Coming Soon</p>
+        </div>
+      </div>
+      
+    </div>
+ <!-- Three Sections) -->
+  <div class="w-100">
+    <!-- Row 1: My Aquariums -->
+    <div class="bg-light p-3 mb-4 rounded shadow-sm">
+      <h5>My Aquariums</h5>
+      <p>coming soon</p>
+    </div>
+
+    <!-- Row 2: Quick Tools -->
+    <div class="bg-light p-3 mb-4 rounded shadow-sm">
+      <h5>Quick Tools</h5>
+      <p>under construction.</p>
+    </div>
+
+    <!-- Row 3: Recent Activity -->
+    <div class="bg-light p-3 rounded shadow-sm">
+      <h5>Recent Activity</h5>
+      <p>Recent logs will appear here.</p>
+    </div>
+  </div>
+</div>
+  
 
     
-{% endblock %}
+
+
+  {% else %}
+  <h2>Please log in to manage your aquariums</h2>
+  {% endif %}
+</div>
+
+{% endblock %} {% block script%}
+<script>
+  function toggleForm() {
+    const formDiv = document.getElementById("addAquarium");
+    formDiv.style.display = formDiv.style.display === "none" ? "block" : "none";
+  }
+</script>
+{% endblock%}

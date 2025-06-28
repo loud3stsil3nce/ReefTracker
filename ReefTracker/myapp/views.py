@@ -10,7 +10,17 @@ def landing(request):
     return render(request, "main/landing.html")
 @login_required
 def home(request):
-    return render(request, "main/home.html")
+    aquariums = Aquariums.objects.filter(user=request.user)
+    if request.method == "POST":
+        form = AddAquariumForm(request.POST)
+        if form.is_valid():
+            aquarium = form.save(commit=False)
+            aquarium.user = request.user
+            aquarium.save()
+            return redirect("home")  # prevent form resubmission
+    else:
+        form = AddAquariumForm()
+    return render(request, "main/home.html", {"aquariums": aquariums, "form": form})
 
 
 def sign_up(request):
