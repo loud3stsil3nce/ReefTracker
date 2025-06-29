@@ -12,5 +12,13 @@ class Aquariums(models.Model):
     start_date = models.DateField(default=date.today)
     
         
-
+class CalciumProducts(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=100)
+    PPMPerLiter = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+    
+    
     

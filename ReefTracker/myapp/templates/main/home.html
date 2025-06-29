@@ -8,20 +8,20 @@
 
   <!-- Welcome Section -->
   <section style="background-color: rgb(230, 239, 246); width: 100%">
-    <h1 class="small">Welcome, {{ user.username }}!</h1>
+    <h1 class="large">Welcome, {{ user.username }}!</h1>
   </section>
 
   <!-- DASHBOARD -->
   <div class="d-flex flex-column flex-grow-1">
-    <h2 class="p-2">DASHBOARD</h2>
-    <p class="p-2">Manage your aquariums and track their health.</p>
+    <h2 class="p-2" style="font-size:100px">DASHBOARD</h2>
+    <p class="p-2" style="font-size:20px">Manage your aquariums and track their health.</p>
 
     <!-- Split Columns Section -->
     <div class="d-flex flex-row flex-wrap w-100 gap-4" style="padding-bottom: 10px">
       <!-- Left Column -->
       <div class="flex-fill" style="min-width: 300px">
         <div class="p-3 bg-white rounded shadow-sm">
-          <p>You currently have {{ aquariums|length }} aquarium(s).</p>
+            <p style="font-size:30px" >You currently have {{ aquariums|length }} aquarium(s).</p>
           <button onclick="toggleForm()" class="btn btn-primary mb-3">
             ADD
           </button>
@@ -40,6 +40,7 @@
       </div>
 
       <!-- Right Column -->
+       
       <div class="flex-fill" style="min-width: 300px">
         <div class="p-3 bg-secondary text-white rounded shadow-sm">
           <p>Recent Activity -- Coming Soon</p>
@@ -50,21 +51,33 @@
  <!-- Three Sections) -->
   <div class="w-100">
     <!-- Row 1: My Aquariums -->
-    <div class="bg-light p-3 mb-4 rounded shadow-sm">
-      <h5>My Aquariums</h5>
-      <p>coming soon</p>
-    </div>
+    <a href="{% url 'myaquariums' %}" class="btn bg-light p-3 mb-4 shadow-sm" style="width:100%; border-radius:100px">
+        <p class="fw-bold" style="font-size: 50px;">My Aquariums</p>
+    </a>
 
     <!-- Row 2: Quick Tools -->
-    <div class="bg-light p-3 mb-4 rounded shadow-sm">
-      <h5>Quick Tools</h5>
-      <p>under construction.</p>
+    
+    <div class="bg-light p-3 mb-4 shadow-sm d-flex flex-column" style="width:100%">
+        <p class="fw-bold" style="font-size: 50px"> Quick Tools</p>
+        <hr>
+        <div class="d-flex flex-row " style="justify-content: space-around;">
+            <a href="{% url 'watervolumecalc' %}" class="btn bg-light p-3 mb-4 shadow-sm" style="width:auto; border-radius:100px">
+                <p class="fw-bold" style="font-size: 20px;">Water Volume Calculator</p>
+            </a>
+            <a href="{% url 'calculators' %}" class="btn bg-light p-3 mb-4 shadow-sm" style="width:auto; border-radius:100px">
+                <p class="fw-bold" style="font-size: 20px;">Dosing Calculator</p>
+            </a>
+            <a href="{% url 'calculators' %}" class="btn bg-light p-3 mb-4 shadow-sm" style="width:auto; border-radius:100px">
+                <p class="fw-bold" style="font-size: 20px;">Analytics</p>
+            </a>
+            
+        </div>
     </div>
+    
 
     <!-- Row 3: Recent Activity -->
-    <div class="bg-light p-3 rounded shadow-sm">
-      <h5>Recent Activity</h5>
-      <p>Recent logs will appear here.</p>
+    <div class="bg-light p-3 mb-4 shadow-sm" style="width:100%">
+        <p class="fw-bold" style="font-size: 50px"> Recent Activity</p>
     </div>
   </div>
 </div>

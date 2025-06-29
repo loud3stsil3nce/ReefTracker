@@ -9,10 +9,10 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register', views.sign_up, name='sign_up'),  
     path('profile', views.profile, name='profile'),
-    path('profile/myaquariums', views.myaquariums, name='myaquariums'),
+    path('profile/myaquariums/', views.myaquariums, name='myaquariums'),
     path('profile/myaquariums/<int:aquarium_id>/', views.aquariumview, name='aquariumview'),
     path('calculators', views.calculators, name='calculators'),
     path('calculators/watervolume', views.watervolumecalc, name='watervolumecalc'),
-    path('profile/myaquariums', views.myaquariums, name='myaquariums'),
+    path('calculators/calciumdosing', views.calciumcalc, name='calciumcalc')
     
 ]

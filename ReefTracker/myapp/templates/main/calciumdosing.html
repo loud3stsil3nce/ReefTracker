@@ -1,0 +1,27 @@
+{% extends "main/base.html" %} {% load crispy_forms_tags %} {% block title %}
+Calcium Dosing Calculator {% endblock %} {% block content %}
+<div
+  class="container-fluid min-vh-100 d-flex flex-column"
+  style="overflow: visible"
+>
+  <div class="d-flex flex-column">
+    <h1 class="mt-4">Calcium Dosing Calculator</h1>
+    <p>Calculate the product required to attain the desired Calcium level.</p>
+  </div>
+  <hr />
+  <div>
+    
+    <form method="POST" novalidate>
+      {% csrf_token %} {{ form|crispy }}
+      <button type="submit" class="btn btn-primary">Calculate</button>
+    </form>
+    
+    {% if dosage %}
+    <div class="alert alert-success mt-4">
+      <strong>Calculated Dosing Recommendation:</strong> {{ dosage|floatformat:2}} mL
+    </div>
+    {% endif %}
+  </div>
+
+  {% endblock %}
+</div>

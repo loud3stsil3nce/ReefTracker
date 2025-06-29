@@ -2,10 +2,12 @@
 {% block title %} Profile Page {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid min-vh-100 d-flex flex-column"
+  style="overflow: visible">
     <h1 class="mt-4">Profile Page</h1>
+    <hr>
     {% if user.is_authenticated %}
-    <p>Welcome, {{ user.username }}!</p>
+    <p style='font-size:30px'>Welcome, {{ user.username }}!</p>
     {% endif %}
     <h2>Your Details</h2>
     <ul class="list-group ">
@@ -14,9 +16,21 @@
         <li class="list-group-item"><strong>First Name:</strong> {{ user.first_name }}</li>
         <li class="list-group-item"><strong>Last Name:</strong> {{ user.last_name }}</li>
     </ul>
+    <hr>
     <h2 class="mt-4">Actions</h2>
-    <div>
-        <a href="{% url 'myaquariums' %}" class="btn btn-primary">Your Aquariums</a>
-    </div>
+    <hr>
+    <div class="d-flex flex-row text-center justify-content-around" style="padding:10px">
+        
+        <form method="POST" action="{% url 'myaquariums' %}" class="d-flex flex-row justify-content-center" style="background-color: #5D8AA8; padding:10px; border-radius: 10px">{% csrf_token %}
+              <button type="submit" class="btn btn-link nav-link p-0 m-0 align-baseline" style="border: none;">My Aquariums</button>
+        </form>
+        <form method="POST" action="{% url 'logout' %}" class="d-flex flex-row justify-content-center" style="background-color: #5D8AA8; padding:10px; border-radius: 10px">{% csrf_token %}
+              <button type="submit" class="btn btn-link nav-link p-0 m-0 align-baseline" style="border: none;">Edit Profile</button>
+        </form>
+        <form method="POST" action="{% url 'logout' %}" class="d-flex flex-row justify-content-center" style="background-color: #5D8AA8; padding:10px; border-radius: 10px">{% csrf_token %}
+              <button type="submit" class="btn btn-link nav-link p-0 m-0 align-baseline" style="border: none;">Logout</button>
+        </form>
 
+    </div>
+</div>
 {% endblock %}

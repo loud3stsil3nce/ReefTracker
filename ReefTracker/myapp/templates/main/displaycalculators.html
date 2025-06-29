@@ -2,7 +2,8 @@
 {% block title %}Calculators{% endblock %}
 
 {% block content %}
-
+<div class="container-fluid min-vh-100 d-flex flex-column"
+  style="overflow: visible">
     <h1 class="mt-4">Calculators</h1>
     <p>Use the calculators below to perform various calculations related to reef health.</p>
     <div class="row" style="display: flex; justify-content: space-between;">
@@ -14,7 +15,7 @@
         <div class="col-md-4">
             <h2>Calcium Dosing Calculator</h2>
             <p>Description of Calculator 2.</p>
-            <a href="{% url 'calculators' %}" class="btn btn-primary">Go to Calculator 2</a>
+            <a href="{% url 'calciumcalc' %}" class="btn btn-primary">Go to Calculator 2</a>
         </div>
         <div class="col-md-4">
             <h2>Magnesium Dosing Calculator</h2>
@@ -22,5 +23,5 @@
             <a href="{% url 'calculators' %}" class="btn btn-primary">Go to Calculator 3</a>
         </div>
     </div>
-
+</div>
 {% endblock %}

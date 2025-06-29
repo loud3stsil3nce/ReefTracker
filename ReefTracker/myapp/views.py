@@ -4,8 +4,8 @@ from .models import Aquariums
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric, AddAquariumForm
-from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator
+from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric, AddAquariumForm, CalciumDosingCalculatorForm
+from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator, CalciumDosingCalculator
 def landing(request):
     return render(request, "main/landing.html")
 @login_required
@@ -100,3 +100,24 @@ def watervolumecalc(request):
         form = WaterVolumeFormImperial() if form_unit == "imperial" else WaterVolumeFormMetric()
     return render(request, "main/watervolume.html", {"form_unit": form_unit, "form": form, "result": result})
         
+def calciumcalc(request):
+    result = None
+    
+    if request.method == "POST":
+        form = CalciumDosingCalculatorForm(request.POST)
+        if form.is_valid():
+            cleaned = form.cleaned_data
+            product = cleaned.get("product")
+            currentPPM = float(cleaned.get("currentPPM"))
+            targetPPM = float(cleaned.get("targetPPM"))
+            waterVolumeL = float(cleaned.get("waterVolumeMetric"))
+            solutionPPM = float(product.PPMPerLiter)
+            
+            ppmIncrease = targetPPM - currentPPM
+            dosage = round(CalciumDosingCalculator(ppmIncrease, waterVolumeL, solutionPPM), 2)
+            result = True
+            return render(request, "main/calciumdosing.html", {"form": form, "result": result, "dosage": dosage if result else None})
+            
+    else:
+        form = CalciumDosingCalculatorForm() 
+    return render(request, "main/calciumdosing.html", {"form": form, "result": result, "dosage": None})
