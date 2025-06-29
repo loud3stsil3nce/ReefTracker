@@ -13,6 +13,7 @@ urlpatterns = [
     path('profile/myaquariums/<int:aquarium_id>/', views.aquariumview, name='aquariumview'),
     path('calculators', views.calculators, name='calculators'),
     path('calculators/watervolume', views.watervolumecalc, name='watervolumecalc'),
-    path('calculators/calciumdosing', views.calciumcalc, name='calciumcalc')
+    path('calculators/calciumdosing', views.calciumcalc, name='calciumcalc'),
+    path('calculators/magnesiumdosing', views.magnesiumcalc, name='magnesiumcalc')
     
 ]

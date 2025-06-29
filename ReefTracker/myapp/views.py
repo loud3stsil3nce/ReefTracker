@@ -4,8 +4,8 @@ from .models import Aquariums
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric, AddAquariumForm, CalciumDosingCalculatorForm
-from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator, CalciumDosingCalculator
+from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric, AddAquariumForm, CalciumDosingCalculatorForm, MagnesiumDosingCalculatorForm
+from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator, CalciumDosingCalculator, MagnesiumDosingCalculator
 def landing(request):
     return render(request, "main/landing.html")
 @login_required
@@ -121,3 +121,25 @@ def calciumcalc(request):
     else:
         form = CalciumDosingCalculatorForm() 
     return render(request, "main/calciumdosing.html", {"form": form, "result": result, "dosage": None})
+
+def magnesiumcalc(request):
+    result = None
+    
+    if request.method == "POST":
+        form = MagnesiumDosingCalculatorForm(request.POST)
+        if form.is_valid():
+            cleaned = form.cleaned_data
+            product = cleaned.get("product")
+            currentPPM = float(cleaned.get("currentPPM"))
+            targetPPM = float(cleaned.get("targetPPM"))
+            waterVolumeL = float(cleaned.get("waterVolumeMetric"))
+            solutionPPM = float(product.PPMPerLiter)
+            
+            ppmIncrease = targetPPM - currentPPM
+            dosage = round(MagnesiumDosingCalculator(ppmIncrease, waterVolumeL, solutionPPM), 2)
+            result = True
+            return render(request, "main/magnesiumdosing.html", {"form": form, "result": result, "dosage": dosage if result else None})
+            
+    else:
+        form = MagnesiumDosingCalculatorForm() 
+    return render(request, "main/magnesiumdosing.html", {"form": form, "result": result, "dosage": None})

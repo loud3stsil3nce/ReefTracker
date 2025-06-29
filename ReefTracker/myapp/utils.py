@@ -28,3 +28,9 @@ def CalciumDosingCalculator(targetPPMIncrease, waterVolumeL, SolutionPPM):
     dosage_L = (targetPPMIncrease * waterVolumeL) / SolutionPPM
     dosage_mL = dosage_L * 1000  # Convert liters to milliliters
     return dosage_mL
+
+def MagnesiumDosingCalculator(targetPPMIncrease, waterVolumeL, SolutionPPM):
+    #Calculate the dosage in milliliters needed to achieve a target PPM increase
+    dosage_L = (targetPPMIncrease * waterVolumeL) / SolutionPPM
+    dosage_mL = dosage_L * 1000  # Convert liters to milliliters
+    return dosage_mL

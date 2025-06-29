@@ -2,7 +2,7 @@ from django import forms
 
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Aquariums, CalciumProducts
+from .models import Aquariums, CalciumProducts, MagnesiumProducts
 from datetime import date
 
 class RegisterForm(UserCreationForm):
@@ -36,6 +36,18 @@ class CalciumDosingCalculatorForm(forms.Form):
     currentPPM = forms.CharField(label="Current Level in PPM")
     targetPPM = forms.CharField(label="Target Level in PPM")
     waterVolumeMetric = forms.CharField(label="Net Water Volume in Liters")  
+    
+    
+class MagnesiumDosingCalculatorForm(forms.Form):
+    product = forms.ModelChoiceField(
+        queryset=MagnesiumProducts.objects.all(),
+        empty_label="Select a Product",
+        to_field_name="name"
+    )
+    currentPPM = forms.CharField(label="Current Level in PPM")
+    targetPPM = forms.CharField(label="Target Level in PPM")
+    waterVolumeMetric = forms.CharField(label="Net Water Volume in Liters")  
+    
     
 
 class AddAquariumForm(forms.ModelForm):

@@ -20,5 +20,13 @@ class CalciumProducts(models.Model):
     def __str__(self):
         return self.name
     
+
+class MagnesiumProducts(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=100)
+    PPMPerLiter = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name 
     
     
