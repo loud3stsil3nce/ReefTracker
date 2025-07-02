@@ -75,16 +75,11 @@ def myaquariums(request):
         "form": form
     })
 
-@login_required
-def deleteaquarium(rquest, aquarium_id):
-    aquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
-    if request.method == "POST":
-        aquarium.delete()
-        return redirect("myaquariums")
-        
+def deleteaquarium(request, aquarium_id):
+    aquarium = Aquariums.objects.get(pk=aquarium_id)
+    aquarium.delete()
+    return redirect("myaquariums")
     
-
-
 
 @login_required
 def aquariumview(request, aquarium_id):
@@ -97,7 +92,7 @@ def aquariumview(request, aquarium_id):
     
     return render(request, "main/aquariumview.html", {"selectedaquarium": selectedaquarium})
 
-@login_required
+
 @login_required
 def watervolumecalc(request):
     result = None
@@ -178,8 +173,3 @@ def magnesiumcalc(request):
     return render(request, "main/magnesiumdosing.html", {"form": form, "result": result, "dosage": None})
 
 
-def deleteaquarium(request, aquarium_id):
-    aquarium = Aquariums.objects.get(pk=aquarium_id)
-    aquarium.delete()
-    return redirect("myaquariums")
-    
