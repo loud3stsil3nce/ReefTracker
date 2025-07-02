@@ -69,7 +69,7 @@ def aquariumview(request, aquarium_id):
         return HttpResponse("Aquarium not found.", status=404)
     
     return render(request, "main/aquariumview.html", {"selectedaquarium": selectedaquarium})
-
+@login_required
 def watervolumecalc(request):
     result = None
     form_unit = request.POST.get("form_unit", "imperial")
@@ -99,7 +99,7 @@ def watervolumecalc(request):
     else:
         form = WaterVolumeFormImperial() if form_unit == "imperial" else WaterVolumeFormMetric()
     return render(request, "main/watervolume.html", {"form_unit": form_unit, "form": form, "result": result})
-        
+@login_required        
 def calciumcalc(request):
     result = None
     
@@ -121,7 +121,7 @@ def calciumcalc(request):
     else:
         form = CalciumDosingCalculatorForm() 
     return render(request, "main/calciumdosing.html", {"form": form, "result": result, "dosage": None})
-
+@login_required
 def magnesiumcalc(request):
     result = None
     
@@ -143,3 +143,10 @@ def magnesiumcalc(request):
     else:
         form = MagnesiumDosingCalculatorForm() 
     return render(request, "main/magnesiumdosing.html", {"form": form, "result": result, "dosage": None})
+
+
+def deleteaquarium(request, aquarium_id):
+    aquarium = Aquariums.objects.get(pk=aquarium_id)
+    aquarium.delete()
+    return redirect("myaquariums")
+    

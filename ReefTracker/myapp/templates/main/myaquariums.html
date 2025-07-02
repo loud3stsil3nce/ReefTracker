@@ -18,6 +18,7 @@
             </div>
             <div class="card-footer" style="display: flex; justify-content: space-between; width: 100%;">
                 <a class="btn btn-primary" href="{% url 'aquariumview' aquarium.id %}">View Details</a>
+                <a class="btn btn-primary" href="{% url 'deleteaquarium' aquarium.id %}">Delete Aquarium</a>
             </div>
         </div> <!-- missing closing tag here was causing the issue -->
     </div>
