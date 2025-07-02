@@ -3,7 +3,8 @@
 {% block title %} My Aquariums {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid min-vh-100 d-flex flex-column"
+  style="overflow: visible"
     <h1 class="mt-4">My Aquariums</h1>
     <p>Manage your aquariums and track their health.</p>
     {% if aquariums %}
@@ -18,8 +19,9 @@
             </div>
             <div class="card-footer" style="display: flex; justify-content: space-between; width: 100%;">
                 <a class="btn btn-primary" href="{% url 'aquariumview' aquarium.id %}">View Details</a>
+                
             </div>
-        </div> <!-- missing closing tag here was causing the issue -->
+        </div>
     </div>
 {% endfor %}
     </div>

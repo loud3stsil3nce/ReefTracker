@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from .models import Aquariums
 # Create your views here.
 from django.contrib.auth import login, logout, authenticate
@@ -38,6 +38,22 @@ def sign_up(request):
 def profile(request):
     return render(request, "main/profile.html")
 
+
+@login_required
+def editaquarium(request, aquarium_id):
+    aquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
+
+    if request.method == 'POST':
+        form = AddAquariumForm(request.POST, instance=aquarium)
+        if form.is_valid():
+            form.save()
+            return redirect('myaquariums')
+    else:
+        form = AddAquariumForm(instance=aquarium)
+
+    return render(request, 'main/editaquarium.html', {'form': form, 'aquarium': aquarium})
+
+@login_required
 def calculators(request):
     return render(request, "main/displaycalculators.html")
 
@@ -60,6 +76,17 @@ def myaquariums(request):
     })
 
 @login_required
+def deleteaquarium(rquest, aquarium_id):
+    aquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
+    if request.method == "POST":
+        aquarium.delete()
+        return redirect("myaquariums")
+        
+    
+
+
+
+@login_required
 def aquariumview(request, aquarium_id):
     
     
@@ -70,6 +97,7 @@ def aquariumview(request, aquarium_id):
     
     return render(request, "main/aquariumview.html", {"selectedaquarium": selectedaquarium})
 
+@login_required
 def watervolumecalc(request):
     result = None
     form_unit = request.POST.get("form_unit", "imperial")
@@ -99,7 +127,8 @@ def watervolumecalc(request):
     else:
         form = WaterVolumeFormImperial() if form_unit == "imperial" else WaterVolumeFormMetric()
     return render(request, "main/watervolume.html", {"form_unit": form_unit, "form": form, "result": result})
-        
+
+@login_required
 def calciumcalc(request):
     result = None
     
@@ -122,6 +151,7 @@ def calciumcalc(request):
         form = CalciumDosingCalculatorForm() 
     return render(request, "main/calciumdosing.html", {"form": form, "result": result, "dosage": None})
 
+@login_required
 def magnesiumcalc(request):
     result = None
     
