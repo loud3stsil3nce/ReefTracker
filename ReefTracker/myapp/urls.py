@@ -11,6 +11,7 @@ urlpatterns = [
     path('profile', views.profile, name='profile'),
     path('profile/myaquariums/', views.myaquariums, name='myaquariums'),
     path('profile/myaquariums/<int:aquarium_id>/', views.aquariumview, name='aquariumview'),
+    path('profile/aquarium/<int:aquarium_id>/edit/', views.editaquarium, name='editaquarium'),
     path('calculators', views.calculators, name='calculators'),
     path('calculators/watervolume', views.watervolumecalc, name='watervolumecalc'),
     path('calculators/calciumdosing', views.calciumcalc, name='calciumcalc'),

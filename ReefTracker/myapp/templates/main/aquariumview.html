@@ -8,9 +8,9 @@
     <p>Manage your aquarium information.</p>
     {% if selectedaquarium %}
     <div class="row">
-        
+
         <div class="card col-md-4 mb-4">
-                
+
             <div class="card-body">
                 <h5 class="card-title">{{ selectedaquarium.name }}</h5>
                 <p class="card-text">Type: {{ selectedaquarium.type }}</p>
@@ -18,32 +18,33 @@
                 <p class="card-text">Start Date: {{ selectedaquarium.start_date }}</p>
             </div>
             <div class="card-footer" style="display: flex; justify-content: space-between;">
-                    
-                    <button type="submit" class="btn btn-danger">Delete</button>   
-        </div>       
-    </div>
-    
-    {% else %}
-    
+                <a href="{% url 'editaquarium' selectedaquarium.id %}" class="btn btn-secondary">Edit</a>
+                <button type="submit" class="btn btn-danger" >Delete</button>
+            </div>
+        </div>
+        
+
+        {% else %}
+
         <div class="col-md-12">
             <p>No aquariums found. Please search a valid aquarium.</p>
-            
+
         </div>
-    {% endif %}
+        {% endif %}
         <section>
             <button onclick="toggleForm()" class="btn btn-primary">ADD</button>
             <div id="addAquarium" style="display: none; margin-top: 1rem;">
-            <form method="POST" action="{% url 'myaquariums' %}">
-                <h2>Aquarium Details</h2>
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button type="submit" class="btn btn-primary">Register Aquarium</button>
-            </form>
+                <form method="POST" action="{% url 'myaquariums' %}">
+                    <h2>Aquarium Details</h2>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">Register Aquarium</button>
+                </form>
             </div>
         </section>
 
-</div>
-{% endblock %}
-{% block script %}
+    </div>
+    {% endblock %}
+    {% block script %}
 
-{% endblock %}
+    {% endblock %}
