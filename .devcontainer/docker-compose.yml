@@ -1,0 +1,22 @@
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/python:3.12
+    volumes:
+      - ..:/workspaces:cached
+    command: sleep infinity
+    depends_on:
+      - db
+    # share network namespace with db so localhost works for DATABASE_URL
+    network_mode: service:db
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: reeftracker
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev -d reeftracker"]
+      interval: 2s
+      timeout: 5s
+      retries: 60
