@@ -1,1 +1,43 @@
+# --- Python bytecode / build ---
+__pycache__/
+*.py[cod]
+*.so
+.build/
+dist/
+*.egg-info/
+
+# --- Virtual envs ---
+.venv/
+venv/
+env/
+
+# --- Django: local-only artifacts ---
+db.sqlite3
+staticfiles/
+media/
+*.log
+
+# --- Env / secrets  ---
 .env
+.env.*
+ReefTracker/.env
+.envrc
+*.secrets
+*.key
+
+# --- Test / tooling caches ---
+.pytest_cache/
+.coverage*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# --- Editors / OS junk ---
+.vscode/
+.idea/
+*.code-workspace
+.DS_Store
+Thumbs.db
+.python-version
+
+
