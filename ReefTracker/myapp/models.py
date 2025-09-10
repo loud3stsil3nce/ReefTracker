@@ -11,6 +11,27 @@ class Aquariums(models.Model):
     type = models.CharField(max_length=50)  # e.g., freshwater, saltwater
     start_date = models.DateField(default=date.today)
     
+  
+class Livestock(models.Model):
+    LIVESTOCK_TYPES = [
+    ('fish', 'Fish'),
+    ('coral', 'Coral'),
+    ('invertebrate', 'Invertebrate'),
+    ('crustacean', 'Crustacean'),
+    ('mollusk', 'Mollusk'),
+    ('anemone', 'Anemone'),
+    ('algae', 'Algae'),
+    ('sponge', 'Sponge'),
+    ('urchin', 'Urchin / Echinoderm'),
+    ('other', 'Other'),
+]
+    aquarium = models.ForeignKey(Aquariums, on_delete=models.CASCADE, related_name="livestock")
+    
+  
+  
+  
+  
+  
         
 class CalciumProducts(models.Model):
     name = models.CharField(max_length=100)
