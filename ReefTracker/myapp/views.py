@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric, AddAquariumForm, CalciumDosingCalculatorForm, MagnesiumDosingCalculatorForm
 from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator, CalciumDosingCalculator, MagnesiumDosingCalculator
+from django.http import JsonResponse
+from django.utils import timezone
+from .models import WaterParameter
+from .forms import WaterParameterForm
 def landing(request):
     return render(request, "main/landing.html")
 @login_required
@@ -93,8 +97,9 @@ def aquariumview(request, aquarium_id):
         selectedaquarium = Aquariums.objects.get(id=aquarium_id, user=request.user)
     except Aquariums.DoesNotExist:
         return HttpResponse("Aquarium not found.", status=404)
-    
-    return render(request, "main/aquariumview.html", {"selectedaquarium": selectedaquarium})
+    # recent params (last 3)
+    recent_parameters = WaterParameter.objects.filter(aquarium=selectedaquarium).order_by('-measured_at')[:3]
+    return render(request, "main/aquariumview.html", {"selectedaquarium": selectedaquarium, "recent_parameters": recent_parameters})
 
 
 @login_required
@@ -175,5 +180,75 @@ def magnesiumcalc(request):
     else:
         form = MagnesiumDosingCalculatorForm() 
     return render(request, "main/magnesiumdosing.html", {"form": form, "result": result, "dosage": None})
+
+
+
+@login_required
+def parameters(request, aquarium_id):
+    aquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
+
+    if request.method == 'POST':
+        form = WaterParameterForm(request.POST)
+        if form.is_valid():
+            wp = form.save(commit=False)
+            wp.aquarium = aquarium
+            wp.save()
+            return redirect('parameters', aquarium_id=aquarium.id)
+    else:
+        form = WaterParameterForm()
+
+    # Filters
+    parameter_filter = request.GET.get('parameter')
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    readings = WaterParameter.objects.filter(aquarium=aquarium)
+    if parameter_filter:
+        readings = readings.filter(parameter=parameter_filter)
+    if start:
+        readings = readings.filter(measured_at__gte=start)
+    if end:
+        readings = readings.filter(measured_at__lte=end)
+
+    readings = readings.order_by('-measured_at')
+
+    context = {
+        'aquarium': aquarium,
+        'form': form,
+        'readings': readings[:200],  # cap initial display
+        'parameter_filter': parameter_filter or '',
+        'start': start or '',
+        'end': end or '',
+    }
+    return render(request, 'main/parameters.html', context)
+
+
+@login_required
+def parameters_data(request, aquarium_id):
+    aquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
+    parameter_key = request.GET.get('parameter')
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    qs = WaterParameter.objects.filter(aquarium=aquarium)
+    if parameter_key:
+        qs = qs.filter(parameter=parameter_key)
+    if start:
+        qs = qs.filter(measured_at__gte=start)
+    if end:
+        qs = qs.filter(measured_at__lte=end)
+    qs = qs.order_by('measured_at')
+
+    labels = [wp.measured_at.isoformat() for wp in qs]
+    data = [wp.value for wp in qs]
+    unit = qs.first().unit if qs.exists() else ''
+    return JsonResponse({
+        'labels': labels,
+        'datasets': [{
+            'label': f"{parameter_key or 'parameter'} ({unit})",
+            'data': data,
+            'borderColor': '#2388CB',
+            'backgroundColor': 'rgba(35,136,203,0.2)'
+        }],
+        'unit': unit,
+    })
 
 

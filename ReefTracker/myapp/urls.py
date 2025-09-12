@@ -14,6 +14,8 @@ urlpatterns = [
     
     path('profile/myaquariums/', views.myaquariums, name='myaquariums'),
     path('profile/myaquariums/<int:aquarium_id>/', views.aquariumview, name='aquariumview'),
+    path('profile/myaquariums/<int:aquarium_id>/parameters/', views.parameters, name='parameters'),
+    path('profile/myaquariums/<int:aquarium_id>/parameters/data/', views.parameters_data, name='parameters_data'),
     path('profile/aquarium/<int:aquarium_id>/edit/', views.editaquarium, name='editaquarium'),
     path('delete/<aquarium_id>', views.deleteaquarium, name='deleteaquarium'),
     

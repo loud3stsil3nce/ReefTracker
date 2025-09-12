@@ -1,0 +1,140 @@
+{% extends "main/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Parameters{% endblock %}
+
+{% block content %}
+<div class="container py-4 text-start">
+  <h1 class="h3 mb-3">Water Parameters - {{ aquarium.name }}</h1>
+
+  <div class="row g-3">
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Add Reading</h5>
+          <form method="post" class="mt-2">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex flex-wrap gap-2 align-items-end mb-2">
+            <div>
+              <label for="paramSelect" class="form-label mb-1">Parameter</label>
+              <select id="paramSelect" class="form-select form-select-sm">
+                <option value="">All</option>
+                {% for key, label in form.fields.parameter.choices %}
+                <option value="{{ key }}" {% if parameter_filter == key %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label for="startDate" class="form-label mb-1">Start</label>
+              <input id="startDate" type="date" value="{{ start }}" class="form-control form-control-sm"/>
+            </div>
+            <div>
+              <label for="endDate" class="form-label mb-1">End</label>
+              <input id="endDate" type="date" value="{{ end }}" class="form-control form-control-sm"/>
+            </div>
+            <button id="applyFilters" class="btn btn-sm btn-outline-primary">Apply</button>
+          </div>
+          <canvas id="paramChart" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mt-3">
+    <div class="card-body">
+      <h5 class="card-title">Recent Readings</h5>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Parameter</th>
+              <th>Value</th>
+              <th>Unit</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in readings %}
+            <tr>
+              <td>{{ r.measured_at|date:"Y-m-d H:i" }}</td>
+              <td>{{ r.get_parameter_display }}</td>
+              <td>{{ r.value }}</td>
+              <td>{{ r.unit }}</td>
+              <td>{{ r.notes|default:"" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-muted">No readings yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  const aquariumId = {{ aquarium.id }};
+  const paramSelect = document.getElementById('paramSelect');
+  const startInput = document.getElementById('startDate');
+  const endInput = document.getElementById('endDate');
+  const applyBtn = document.getElementById('applyFilters');
+  const ctx = document.getElementById('paramChart');
+  let chart;
+
+  function buildUrl() {
+    const url = new URL(window.location.origin + '{% url "parameters_data" aquarium.id %}');
+    if (paramSelect.value) url.searchParams.set('parameter', paramSelect.value);
+    if (startInput.value) url.searchParams.set('start', startInput.value);
+    if (endInput.value) url.searchParams.set('end', endInput.value);
+    return url.toString();
+  }
+
+  async function loadChart() {
+    const res = await fetch(buildUrl());
+    const json = await res.json();
+    const data = {
+      labels: json.labels,
+      datasets: json.datasets
+    };
+    const options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { type: 'category' }
+      }
+    };
+    if (chart) {
+      chart.data = data;
+      chart.update();
+    } else {
+      chart = new Chart(ctx, { type: 'line', data, options });
+    }
+  }
+
+  applyBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const url = new URL(window.location.href);
+    if (paramSelect.value) url.searchParams.set('parameter', paramSelect.value); else url.searchParams.delete('parameter');
+    if (startInput.value) url.searchParams.set('start', startInput.value); else url.searchParams.delete('start');
+    if (endInput.value) url.searchParams.set('end', endInput.value); else url.searchParams.delete('end');
+    history.replaceState(null, '', url.toString());
+    loadChart();
+  });
+
+  // Initial chart load
+  loadChart();
+</script>
+{% endblock %}
+
