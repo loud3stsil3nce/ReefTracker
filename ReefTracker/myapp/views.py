@@ -14,7 +14,7 @@ def landing(request):
     return render(request, "main/landing.html")
 @login_required
 def home(request):
-    aquariums = Aquariums.objects.filter(user=request.user)
+    aquariums = Aquariums.objects.filter(user=request.user).only('id', 'user', 'name', 'size', 'type', 'start_date')
     if request.method == "POST":
         form = AddAquariumForm(request.POST)
         if form.is_valid():
@@ -73,7 +73,7 @@ def myaquariums(request):
     else:
         form = AddAquariumForm()
     
-    aquariums = Aquariums.objects.filter(user=request.user)
+    aquariums = Aquariums.objects.filter(user=request.user).only('id', 'user', 'name', 'size', 'type', 'start_date')
     return render(request, "main/myaquariums.html", {
         "aquariums": aquariums,
         "form": form
@@ -94,7 +94,7 @@ def aquariumview(request, aquarium_id):
     
     
     try:
-        selectedaquarium = Aquariums.objects.get(id=aquarium_id, user=request.user)
+        selectedaquarium = Aquariums.objects.only('id', 'user', 'name', 'size', 'type', 'start_date').get(id=aquarium_id, user=request.user)
     except Aquariums.DoesNotExist:
         return HttpResponse("Aquarium not found.", status=404)
     # recent params (last 3)

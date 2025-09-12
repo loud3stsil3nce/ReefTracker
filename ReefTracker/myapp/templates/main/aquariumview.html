@@ -14,9 +14,6 @@
             <p class="card-text mb-1"><strong>Type:</strong> {{ selectedaquarium.type }}</p>
             <p class="card-text mb-1"><strong>Size:</strong> {{ selectedaquarium.size }}</p>
             <p class="card-text mb-1"><strong>Start Date:</strong> {{ selectedaquarium.start_date }}</p>
-            {% if selectedaquarium.volume_liters %}
-            <p class="card-text mb-1"><strong>Volume:</strong> {{ selectedaquarium.volume_liters }} L</p>
-            {% endif %}
           </div>
           <div class="card-footer d-flex justify-content-between">
             <a href="{% url 'editaquarium' selectedaquarium.id %}" class="btn btn-secondary">Edit</a>
