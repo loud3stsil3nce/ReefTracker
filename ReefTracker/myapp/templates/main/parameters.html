@@ -13,7 +13,21 @@
           <h5 class="card-title">Add Reading</h5>
           <form method="post" class="mt-2">
             {% csrf_token %}
-            {{ form|crispy }}
+            <div class="mb-2">
+              {{ form.parameter|as_crispy_field }}
+            </div>
+            <div class="mb-2">
+              {{ form.value|as_crispy_field }}
+            </div>
+            <div class="mb-2">
+              {{ form.unit|as_crispy_field }}
+            </div>
+            <div class="mb-2">
+              {{ form.measured_at|as_crispy_field }}
+            </div>
+            <div class="mb-2">
+              {{ form.notes|as_crispy_field }}
+            </div>
             <button type="submit" class="btn btn-primary">Save</button>
           </form>
         </div>
@@ -135,6 +149,38 @@
 
   // Initial chart load
   loadChart();
+
+  // Dynamic unit options based on parameter
+  const allowedUnits = {{ allowed_units_json|safe }};
+  const unitSelect = document.getElementById('id_unit');
+  const paramField = document.getElementById('id_parameter');
+
+  function populateUnits() {
+    if (!paramField || !unitSelect) return;
+    const key = paramField.value;
+    const units = allowedUnits[key] || [];
+    // Clear existing
+    unitSelect.innerHTML = '';
+    if (units.length === 0) {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'Select a unit';
+      unitSelect.appendChild(opt);
+      return;
+    }
+    for (const [code, label] of units) {
+      const opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = label;
+      unitSelect.appendChild(opt);
+    }
+  }
+
+  if (paramField) {
+    paramField.addEventListener('change', populateUnits);
+    // Populate once on load
+    populateUnits();
+  }
 </script>
 {% endblock %}
 

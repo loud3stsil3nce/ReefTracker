@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from .models import WaterParameter
 from .forms import WaterParameterForm
+import json
 def landing(request):
     return render(request, "main/landing.html")
 @login_required
@@ -218,6 +219,7 @@ def parameters(request, aquarium_id):
         'parameter_filter': parameter_filter or '',
         'start': start or '',
         'end': end or '',
+        'allowed_units_json': json.dumps(WaterParameter.ALLOWED_UNITS_BY_PARAMETER),
     }
     return render(request, 'main/parameters.html', context)
 
