@@ -3,23 +3,25 @@
 {% block title %} My Aquariums {% endblock %}
 
 {% block content %}
-<div class="container-fluid min-vh-100 d-flex flex-column"
-  style="overflow: visible"
-    <h1 class="mt-4">My Aquariums</h1>
+<div class="container py-4">
+    <h1 class="h3 mb-3">My Aquariums</h1>
     <p>Manage your aquariums and track their health.</p>
     {% if aquariums %}
-    <div class="row">
+    <div class="row g-3">
         {% for aquarium in aquariums %}
-    <div class="col-md-4 mb-4" style="width: 100%;">
-        <div class="card">
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
             <div class="card-body">
                 <h5 class="card-title">{{ aquarium.name }}</h5>
                 <p class="card-text">Type: {{ aquarium.type }}</p>
                 <p class="card-text">Size: {{ aquarium.size }} </p>
             </div>
-            <div class="card-footer" style="display: flex; justify-content: space-between; width: 100%;">
+            <div class="card-footer d-flex justify-content-between">
                 <a class="btn btn-primary" href="{% url 'aquariumview' aquarium.id %}">View Details</a>
-                <a class="btn btn-primary" href="{% url 'deleteaquarium' aquarium.id %}">Delete Aquarium</a>
+                <form method="post" action="{% url 'deleteaquarium' aquarium.id %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete Aquarium</button>
+                </form>
             </div>
         </div>
     </div>
@@ -33,9 +35,9 @@
             
         </div>
     {% endif %}
-        <section>
+        <section class="mt-3">
             <button onclick="toggleForm()" class="btn btn-primary">ADD</button>
-            <div id="addAquarium" style="display: none; margin-top: 1rem;">
+            <div id="addAquarium" class="mt-2" style="display: none;">
             <form method="POST" action="{% url 'myaquariums' %}">
                 <h2>Aquarium Details</h2>
                 {% csrf_token %}

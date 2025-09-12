@@ -2,26 +2,37 @@
 {% block title %}Calculators{% endblock %}
 
 {% block content %}
-<div class="container-fluid min-vh-100 d-flex flex-column"
-  style="overflow: visible">
-    <h1 class="mt-4">Calculators</h1>
-    <p>Use the calculators below to perform various calculations related to reef health.</p>
-    <div class="row" style="display: flex; justify-content: space-between;">
-        <div class="col-md-4">
-            <h2>Water Volume Calculator</h2>
-            <p>Description of Calculator 1.</p>
-            <a href="{% url 'watervolumecalc' %}" class="btn btn-primary">Go to Calculator 1</a>
+<div class="container-fluid py-3">
+  <h1 class="mb-2">Calculators</h1>
+  <p class="text-muted mb-2">Use the calculators below to perform various calculations related to reef health.</p>
+  <div class="row g-3">
+    <div class="col-12 col-md-4">
+      <div class="card h-100 shadow-sm compact-card">
+        <div class="card-body">
+          <h2 class="h5">Water Volume Calculator</h2>
+          <p class="mb-3">Calculate your aquarium's volume in liters or gallons.</p>
+          <a href="{% url 'watervolumecalc' %}" class="btn btn-primary">Open</a>
         </div>
-        <div class="col-md-4">
-            <h2>Calcium Dosing Calculator</h2>
-            <p>Description of Calculator 2.</p>
-            <a href="{% url 'calciumcalc' %}" class="btn btn-primary">Go to Calculator 2</a>
-        </div>
-        <div class="col-md-4">
-            <h2>Magnesium Dosing Calculator</h2>
-            <p>Description of Calculator 3.</p>
-            <a href="{% url 'magnesiumcalc' %}" class="btn btn-primary">Go to Calculator 3</a>
-        </div>
+      </div>
     </div>
+    <div class="col-12 col-md-4">
+      <div class="card h-100 shadow-sm compact-card">
+        <div class="card-body">
+          <h2 class="h5">Calcium Dosing Calculator</h2>
+          <p class="mb-3">Determine mL required to reach a target Ca level.</p>
+          <a href="{% url 'calciumcalc' %}" class="btn btn-primary">Open</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card h-100 shadow-sm compact-card">
+        <div class="card-body">
+          <h2 class="h5">Magnesium Dosing Calculator</h2>
+          <p class="mb-3">Compute mL required to reach a target Mg level.</p>
+          <a href="{% url 'magnesiumcalc' %}" class="btn btn-primary">Open</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

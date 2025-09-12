@@ -7,34 +7,31 @@
   {% if user.is_authenticated %}
 
   <!-- Welcome Section -->
-  <section style="background-color: rgb(230, 239, 246); width: 100%">
-    <h1 class="large">Welcome, {{ user.username }}!</h1>
+  <section class="py-2 bg-light w-100 compact-section">
+    <h1 class="h3 h2-sm h1-md">Welcome, {{ user.username }}!</h1>
   </section>
 
   <!-- DASHBOARD -->
-  <div class="d-flex flex-column flex-grow-1">
-    <h2 class="p-2" style="font-size:100px">DASHBOARD</h2>
-    <p class="p-2" style="font-size:20px">Manage your aquariums and track their health.</p>
+  <div class="d-flex flex-column flex-grow-1 compact-section">
+    <h2 class="p-2 display-6 mb-1">Dashboard</h2>
+    <p class="px-2 mb-2">Manage your aquariums and track their health.</p>
 
     <!-- Split Columns Section -->
-    <div class="d-flex flex-row flex-wrap w-100 gap-4" style="padding-bottom: 10px">
+    <div class="d-flex flex-row flex-wrap w-100 gap-3 pb-2 compact-section">
       <!-- Left Column -->
       <div class="flex-fill" style="min-width: 300px">
-        <div class="p-3 bg-white rounded shadow-sm">
-            <p style="font-size:30px" >You currently have {{ aquariums|length }} aquarium(s).</p>
-          <button onclick="toggleForm()" class="btn btn-primary mb-3">
-            ADD
-          </button>
-
-          <div id="addAquarium" style="display: none">
-            <form method="POST" action="{% url 'home' %}">
-              {% csrf_token %}
-              <h4>Aquarium Details</h4>
-              {{ form|crispy }}
-              <button type="submit" class="btn btn-primary mt-2">
-                Register Aquarium
-              </button>
-            </form>
+        <div class="card shadow-sm compact-card">
+          <div class="card-body">
+            <p class="fs-5 mb-2">You currently have {{ aquariums|length }} aquarium(s).</p>
+            <button onclick="toggleForm()" class="btn btn-primary mb-3">ADD</button>
+            <div id="addAquarium" style="display: none">
+              <form method="POST" action="{% url 'home' %}">
+                {% csrf_token %}
+                <h4 class="h6">Aquarium Details</h4>
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary mt-2">Register Aquarium</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -42,7 +39,7 @@
       <!-- Right Column -->
        
       <div class="flex-fill" style="min-width: 300px">
-        <div class="p-3 bg-secondary text-white rounded shadow-sm">
+        <div class="p-3 bg-secondary text-white rounded shadow-sm compact-card">
           <p>Recent Activity -- Coming Soon</p>
         </div>
       </div>
@@ -51,33 +48,29 @@
  <!-- Three Sections) -->
   <div class="w-100">
     <!-- Row 1: My Aquariums -->
-    <a href="{% url 'myaquariums' %}" class="btn bg-light p-3 mb-4 shadow-sm" style="width:100%; border-radius:100px">
-        <p class="fw-bold" style="font-size: 50px;">My Aquariums</p>
-    </a>
+    <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2">
+      <h3 class="h5 mb-0">My Aquariums</h3>
+      <a href="{% url 'myaquariums' %}" class="btn btn-sm btn-primary">Open</a>
+    </div>
 
     <!-- Row 2: Quick Tools -->
     
-    <div class="bg-light p-3 mb-4 shadow-sm d-flex flex-column" style="width:100%">
-        <p class="fw-bold" style="font-size: 50px"> Quick Tools</p>
+    <div class="card shadow-sm compact-card mb-3 w-100">
+      <div class="card-body">
+        <p class="fw-bold fs-5 mb-2">Quick Tools</p>
         <hr>
-        <div class="d-flex flex-row " style="justify-content: space-around;">
-            <a href="{% url 'watervolumecalc' %}" class="btn bg-light p-3 mb-4 shadow-sm" style="width:auto; border-radius:100px">
-                <p class="fw-bold" style="font-size: 20px;">Water Volume Calculator</p>
-            </a>
-            <a href="{% url 'calculators' %}" class="btn bg-light p-3 mb-4 shadow-sm" style="width:auto; border-radius:100px">
-                <p class="fw-bold" style="font-size: 20px;">Dosing Calculator</p>
-            </a>
-            <a href="{% url 'calculators' %}" class="btn bg-light p-3 mb-4 shadow-sm" style="width:auto; border-radius:100px">
-                <p class="fw-bold" style="font-size: 20px;">Analytics</p>
-            </a>
-            
+        <div class="d-flex flex-row justify-content-around flex-wrap gap-2">
+          <a href="{% url 'watervolumecalc' %}" class="btn btn-outline-primary btn-sm">Water Volume</a>
+          <a href="{% url 'calculators' %}" class="btn btn-outline-primary btn-sm">Dosing</a>
+          <a href="{% url 'calculators' %}" class="btn btn-outline-secondary btn-sm">Analytics</a>
         </div>
+      </div>
     </div>
     
 
     <!-- Row 3: Recent Activity -->
-    <div class="bg-light p-3 mb-4 shadow-sm" style="width:100%">
-        <p class="fw-bold" style="font-size: 50px"> Recent Activity</p>
+    <div class="d-flex align-items-center justify-content-between border-top pt-2 mt-2">
+      <p class="fw-bold mb-0">Recent Activity</p>
     </div>
   </div>
 </div>

@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en" style="height: 100%;">
   <head>
+    {% load static %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% if title %}
@@ -13,29 +14,20 @@
         rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
         crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'myapp/app.css' %}?v=2">
     <style>
-      html, body {
-        height: 100%;
-        margin: 0;
-      }
-      body {
-        display: flex;
-        flex-direction: column;
-        
-      }
-      .content-wrapper {
-        flex: 1;
-      }
+      html, body { height: 100%; margin: 0; }
+      body { min-height: 100vh; display: flex; flex-direction: column; }
+      .content-wrapper { flex: 1 0 auto; }
     </style>
   </head>
   <body>
     <!-- Navbar -->
 
-<nav class="navbar navbar-expand-lg navbar-light" style="min-height: 50px; ">
-  <div class="content-wrapper container-fluid mx-auto px-0" style="text-align: center; background: linear-gradient(to bottom,rgb(63, 208, 208) 0%, #2388CB 50%, #436EAA 100%); font-size: 30px;">
-
-    <a class="navbar-brand px-3" href="{% url 'landing' %}">Reef Tracker</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+<nav class="navbar navbar-expand-lg navbar-dark" style="min-height: 50px; background: linear-gradient(to bottom, rgb(63, 208, 208) 0%, #2388CB 50%, #436EAA 100%);">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'landing' %}">Reef Tracker</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -59,7 +51,7 @@
 </nav>
 
     <!-- Page Content -->
-    <div class="content-wrapper container-fluid mx-auto px-0" style="text-align: center; width:100%">
+    <div class="content-wrapper container-fluid mx-auto px-0 text-center compact-section" style="width:100%">
       
 
       {% if messages %}
@@ -68,7 +60,7 @@
         {% endfor %}
       {% endif %}
 
-      <div class="mx-auto p-4 w-100" style="background-color: rgb(186, 216, 243); max-height: 100%; max-width: 100%; border-radius: 5px;">
+      <div class="mx-auto p-3 w-100">
         
         {% block content %}{% endblock %}
       </div>
@@ -81,8 +73,8 @@
     {% block script %}{% endblock %}
 
     <!-- Footer -->
-    <footer class="text-center text-muted py-4" style="height: 100px; background: linear-gradient(to bottom, #1E6AA4 0%, #2388CB 50%, #436EAA 100%); font-size: 20px;">
-    <small>&copy; 2025 Reef Tracker · Built with ❤️</small>
-  </footer>
+    <footer class="text-center text-muted py-3 compact-footer" style="min-height: 80px; background: linear-gradient(to bottom, #1E6AA4 0%, #2388CB 50%, #436EAA 100%); font-size: 1rem;">
+      <small>&copy; 2025 Reef Tracker · Built with ❤️</small>
+    </footer>
   </body>
 </html>

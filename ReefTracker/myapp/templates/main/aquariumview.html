@@ -3,48 +3,29 @@
 {% block title %}{{ selectedaquarium.name }}{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mt-4">{{selectedaquarium.name}}</h1>
-    <p>Manage your aquarium information.</p>
-    {% if selectedaquarium %}
-    <div class="row">
-
-        <div class="card col-md-4 mb-4">
-
-            <div class="card-body">
-                <h5 class="card-title">{{ selectedaquarium.name }}</h5>
-                <p class="card-text">Type: {{ selectedaquarium.type }}</p>
-                <p class="card-text">Size: {{ selectedaquarium.size }}</p>
-                <p class="card-text">Start Date: {{ selectedaquarium.start_date }}</p>
-            </div>
-            <div class="card-footer" style="display: flex; justify-content: space-between;">
-                <a href="{% url 'editaquarium' selectedaquarium.id %}" class="btn btn-secondary">Edit</a>
-                <button type="submit" class="btn btn-danger" >Delete</button>
-            </div>
+<div class="container py-4">
+  {% if selectedaquarium %}
+    <h1 class="h3 mb-3">{{ selectedaquarium.name }}</h1>
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">Details</h5>
+            <p class="card-text mb-1"><strong>Type:</strong> {{ selectedaquarium.type }}</p>
+            <p class="card-text mb-1"><strong>Size:</strong> {{ selectedaquarium.size }}</p>
+            <p class="card-text mb-1"><strong>Start Date:</strong> {{ selectedaquarium.start_date }}</p>
+          </div>
+          <div class="card-footer d-flex justify-content-between">
+            <a href="{% url 'editaquarium' selectedaquarium.id %}" class="btn btn-secondary">Edit</a>
+            <form method="post" action="{% url 'deleteaquarium' selectedaquarium.id %}">{% csrf_token %}
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </div>
         </div>
-        
-
-        {% else %}
-
-        <div class="col-md-12">
-            <p>No aquariums found. Please search a valid aquarium.</p>
-
-        </div>
-        {% endif %}
-        <section>
-            <button onclick="toggleForm()" class="btn btn-primary">ADD</button>
-            <div id="addAquarium" style="display: none; margin-top: 1rem;">
-                <form method="POST" action="{% url 'myaquariums' %}">
-                    <h2>Aquarium Details</h2>
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <button type="submit" class="btn btn-primary">Register Aquarium</button>
-                </form>
-            </div>
-        </section>
-
+      </div>
     </div>
-    {% endblock %}
-    {% block script %}
-
-    {% endblock %}
+  {% else %}
+    <div class="alert alert-warning">No aquariums found. Please search a valid aquarium.</div>
+  {% endif %}
+</div>
+{% endblock %}

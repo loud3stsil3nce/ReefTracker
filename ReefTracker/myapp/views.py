@@ -75,8 +75,12 @@ def myaquariums(request):
         "form": form
     })
 
+@login_required
 def deleteaquarium(request, aquarium_id):
-    aquarium = Aquariums.objects.get(pk=aquarium_id)
+    if request.method != "POST":
+        return redirect("myaquariums")
+
+    aquarium = get_object_or_404(Aquariums, pk=aquarium_id, user=request.user)
     aquarium.delete()
     return redirect("myaquariums")
     
@@ -124,7 +128,6 @@ def watervolumecalc(request):
         form = WaterVolumeFormImperial() if form_unit == "imperial" else WaterVolumeFormMetric()
     return render(request, "main/watervolume.html", {"form_unit": form_unit, "form": form, "result": result})
 
-@login_required
 @login_required        
 def calciumcalc(request):
     result = None
@@ -147,7 +150,8 @@ def calciumcalc(request):
     else:
         form = CalciumDosingCalculatorForm() 
     return render(request, "main/calciumdosing.html", {"form": form, "result": result, "dosage": None})
-@login_required
+
+
 
 @login_required
 def magnesiumcalc(request):

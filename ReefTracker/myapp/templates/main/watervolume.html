@@ -3,25 +3,36 @@
 {% block title %} Water Volume Calculator {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mt-4">Water Volume Calculator</h1>
-    <p>Calculate the water volume of your aquarium.</p>
+<div class="container-fluid py-3">
+  <div class="mb-3">
+    <h1 class="h3">Water Volume Calculator</h1>
+    <p class="text-muted">Calculate the water volume of your aquarium.</p>
+  </div>
 
-    <form method="post" novalidate>
+  <div class="card shadow-sm compact-card">
+    <div class="card-body">
+      <form method="post" novalidate>
         {% csrf_token %}
-        <label> 
-            <input type="radio" name="form_unit" value="imperial" {% if form_unit == "imperial" %}checked{% endif %}>
-             Inches </label>
-             <input type="radio" name="form_unit" value="metric" {% if form_unit == "metric" %}checked{% endif %}>
-             Centimeters </label>
+        <div class="mb-3">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="form_unit" id="unitImperial" value="imperial" {% if form_unit == "imperial" %}checked{% endif %}>
+            <label class="form-check-label" for="unitImperial">Inches</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="form_unit" id="unitMetric" value="metric" {% if form_unit == "metric" %}checked{% endif %}>
+            <label class="form-check-label" for="unitMetric">Centimeters</label>
+          </div>
+        </div>
         {{ form|crispy }}
         <button type="submit" class="btn btn-primary">Calculate</button>
-    </form>
+      </form>
 
-    {% if result %}
-        <div class="alert alert-success mt-4">
-            <strong>Calculated Total Water Volume:</strong> {{ totalvolume|floatformat:2 }} {{ unit }}
-            <strong>Calculated Filled Water Volume:</strong> {{ filledvolume|floatformat:2 }} {{ unit }}
-        </div>
-    {% endif %}
+      {% if result %}
+      <div class="alert alert-success mt-4">
+        <div><strong>Total Water Volume:</strong> {{ totalvolume|floatformat:2 }} {{ unit }}</div>
+        <div><strong>Filled Water Volume:</strong> {{ filledvolume|floatformat:2 }} {{ unit }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}

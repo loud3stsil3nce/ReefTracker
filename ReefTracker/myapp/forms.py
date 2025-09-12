@@ -33,9 +33,9 @@ class CalciumDosingCalculatorForm(forms.Form):
         empty_label="Select a Product",
         to_field_name="name"
     )
-    currentPPM = forms.CharField(label="Current Level in PPM")
-    targetPPM = forms.CharField(label="Target Level in PPM")
-    waterVolumeMetric = forms.CharField(label="Net Water Volume in Liters")  
+    currentPPM = forms.FloatField(label="Current Level in PPM", min_value=0)
+    targetPPM = forms.FloatField(label="Target Level in PPM", min_value=0)
+    waterVolumeMetric = forms.FloatField(label="Net Water Volume in Liters", min_value=0)  
     
     
 class MagnesiumDosingCalculatorForm(forms.Form):
@@ -44,9 +44,9 @@ class MagnesiumDosingCalculatorForm(forms.Form):
         empty_label="Select a Product",
         to_field_name="name"
     )
-    currentPPM = forms.CharField(label="Current Level in PPM")
-    targetPPM = forms.CharField(label="Target Level in PPM")
-    waterVolumeMetric = forms.CharField(label="Net Water Volume in Liters")  
+    currentPPM = forms.FloatField(label="Current Level in PPM", min_value=0)
+    targetPPM = forms.FloatField(label="Target Level in PPM", min_value=0)
+    waterVolumeMetric = forms.FloatField(label="Net Water Volume in Liters", min_value=0)  
     
     
 

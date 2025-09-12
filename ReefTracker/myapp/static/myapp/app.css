@@ -1,0 +1,98 @@
+/* Compact spacing utilities */
+.compact-section { padding-top: .5rem !important; padding-bottom: .5rem !important; }
+.compact-card { padding: .75rem !important; }
+
+/* Reduce default margins for headings inside compact sections */
+.compact-section h1, .compact-section h2, .compact-section h3,
+.compact-card h1, .compact-card h2, .compact-card h3 {
+  margin-bottom: .5rem !important;
+}
+
+/* Tighten container spacing on small screens */
+@media (max-width: 576px) {
+  .container, .container-fluid { padding-left: .75rem; padding-right: .75rem; }
+}
+
+/* ===== Theme: Ocean Palette (Bootstrap 5 variable overrides) ===== */
+:root {
+  --reef-primary: #1fb6ff;     /* bright ocean cyan */
+  --reef-primary-dark: #139edc;
+  --reef-secondary: #0d3b66;   /* deep blue */
+  --reef-accent: #2dd4bf;      /* aqua accent */
+  --reef-bg: #0f1f2d;          /* deep sea */
+  --reef-surface: #163349;     /* dark card */
+  --reef-text: #e6f1f7;        /* light text */
+  --reef-muted: #a8c0cf;       /* muted text */
+
+  /* Bootstrap CSS vars */
+  --bs-primary: var(--reef-primary);
+  --bs-primary-rgb: 14,127,166;
+  --bs-secondary: var(--reef-secondary);
+  --bs-secondary-rgb: 20,83,136;
+  --bs-info: var(--reef-accent);
+  --bs-body-bg: var(--reef-bg);
+  --bs-body-color: var(--reef-text);
+  --bs-link-color: var(--reef-accent);
+  --bs-link-hover-color: var(--reef-primary);
+}
+
+/* Global */
+html, body { background: var(--reef-bg) !important; color: var(--reef-text); }
+.content-wrapper, .container, .container-fluid { background: transparent !important; }
+
+a { text-decoration: none; }
+
+/* Navbar */
+.navbar { backdrop-filter: saturate(1.1) blur(2px); }
+.navbar-dark .navbar-brand, .navbar-dark .nav-link {
+  color: rgba(255,255,255,.95) !important;
+}
+.navbar-dark .nav-link:hover { color: #fff !important; }
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--reef-primary);
+  border-color: var(--reef-primary);
+}
+.btn-primary:hover {
+  background-color: var(--reef-primary-dark);
+  border-color: var(--reef-primary-dark);
+}
+.btn-outline-primary {
+  color: var(--reef-primary);
+  border-color: var(--reef-primary);
+}
+.btn-outline-primary:hover {
+  background-color: var(--reef-primary);
+  color: #fff;
+}
+
+/* Cards */
+.card { background-color: var(--reef-surface); border: 1px solid rgba(255,255,255,0.06); border-radius: .5rem; }
+.card .card-title { color: var(--reef-secondary); }
+
+/* Forms */
+.form-control { background-color: #0f2536; border-color: #274860; color: var(--reef-text); }
+.form-control::placeholder { color: #9eb3c4; }
+.form-control:focus { background-color: #0f2536; border-color: var(--reef-primary); box-shadow: 0 0 0 .2rem rgba(31,182,255,.2); }
+.form-check-input:checked { background-color: var(--reef-primary); border-color: var(--reef-primary); }
+
+/* Alerts */
+.alert-success { background-color: #0f5132; border-color: #198754; color: #d1fae5; }
+
+/* Footer */
+.compact-footer { color: rgba(255,255,255,.9); }
+
+/* Light sections → darker panels for contrast */
+.bg-light { background-color: #112a3d !important; color: var(--reef-text) !important; }
+
+/* Ensure cards aren’t white if other styles compete */
+.card { background-color: var(--reef-surface) !important; }
+
+/* Panel wrappers if any */
+.content-wrapper > .mx-auto { background: transparent !important; }
+
+/* Dividers and muted text */
+.text-muted { color: var(--reef-muted) !important; }
+hr, .border-top, .border-bottom { border-color: rgba(255,255,255,0.08) !important; }
+
