@@ -95,16 +95,12 @@ WSGI_APPLICATION = "ReefTracker.wsgi.application"
 
 # ---------- Database ----------
 # Use DATABASE_URL from env. Fall back to SQLite for local dev if missing.
-# Only require SSL for PostgreSQL databases to avoid passing unsupported params to SQLite.
-_default_db_url = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
-_env_db_url = os.environ.get("DATABASE_URL", _default_db_url)
-_ssl_required = _env_db_url.startswith("postgres://") or _env_db_url.startswith("postgresql://")
-
+# ssl_require=True ensures Codespaces → Render uses SSL even if the URL lacks ?sslmode=require
 DATABASES = {
     "default": dj_database_url.config(
-        default=_default_db_url,
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=_ssl_required,
+        ssl_require=True,  # PostgreSQL supports SSL, SQLite will ignore this
     )
 }
 
