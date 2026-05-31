@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from datetime import date
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.conf import settings
+
 # Create your models here.
 
 
@@ -13,37 +15,47 @@ class Aquariums(models.Model):
     type = models.CharField(max_length=50)  # e.g., freshwater, saltwater
     start_date = models.DateField(default=date.today)
     volume_liters = models.FloatField(null=True, blank=True, help_text="Net water volume in liters")
-    
-  
-class Livestock(models.Model):
-    LIVESTOCK_TYPES = [
-        ('fish', 'Fish'),
-        ('coral', 'Coral'),
-        ('invertebrate', 'Invertebrate'),
-        ('crustacean', 'Crustacean'),
-        ('mollusk', 'Mollusk'),
-        ('anemone', 'Anemone'),
-        ('algae', 'Algae'),
-        ('sponge', 'Sponge'),
-        ('urchin', 'Urchin / Echinoderm'),
-        ('other', 'Other'),
+
+class Species(models.Model):
+    CATEGORY_CHOICES = [
+        ('FISH', 'Fish'),
+        ('CORAL', 'Coral'),
+        ('INVERT', 'Invertebrate'),
+        ('MACRO', 'Macroalgae'),
     ]
     
-    aquarium = models.ForeignKey(Aquariums, on_delete=models.CASCADE, related_name="livestock")
-    name = models.CharField(max_length=100, help_text="Common name of the livestock")
-    species = models.CharField(max_length=100, blank=True, help_text="Scientific name")
-    livestock_type = models.CharField(max_length=20, choices=LIVESTOCK_TYPES, default='other')
-    date_added = models.DateField(default=date.today)
-    health_status = models.CharField(max_length=50, default='healthy', help_text="Current health status")
-    notes = models.TextField(blank=True, help_text="Additional notes about this livestock")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return f"{self.name} ({self.get_livestock_type_display()})"
+    common_name = models.CharField(max_length=40)
+    scientific_name = models.CharField(max_length=40, blank=True, null=True)
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
     
     class Meta:
-        ordering = ['-date_added']
+        verbose_name_plural = "Species"
+        ordering = ['category', 'common_name']
+        
+    def __str__(self):
+        return f"{self.common_name} ({self.get_category_display()})" 
+  
+class Livestock(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    species = models.ForeignKey(Species, on_delete=models.SET_NULL, null=True, related_name='livestock_instances')
+    
+    # If the user has something rare not in your DB, they can type a custom name
+    custom_name = models.CharField(max_length=100, blank=True, null=True, help_text="Use this if species is not in the list")
+    
+    date_acquired = models.DateField()
+    notes = models.TextField(blank=True)
+    
+    # Image handling (assuming you have Pillow installed)
+    image = models.ImageField(upload_to='livestock_images/', blank=True, null=True)
+
+    def __str__(self):
+        if self.species:
+            return f"{self.species.common_name} - {self.user.username}"
+        return f"{self.custom_name} - {self.user.username}"
+      
+      
+      
+      
         
 class CalciumProducts(models.Model):
     name = models.CharField(max_length=100)
@@ -165,3 +177,19 @@ class WaterParameter(models.Model):
         indexes = [
             models.Index(fields=['aquarium', 'parameter', 'measured_at']),
         ]
+        
+        
+class Photo(models.Model):
+    aquarium = models.ForeignKey('Aquariums', on_delete=models.CASCADE, related_name='photos')
+    livestock = models.ForeignKey('Livestock', on_delete=models.SET_NULL, null=True, blank=True, related_name='photos')
+    
+    # This will store the image in a folder like 'uploads/photos/user_1/'
+    image = models.ImageField(upload_to='photos/')
+    caption = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Photo for {self.aquarium.name} on {self.created_at.strftime('%Y-%m-%d')}"

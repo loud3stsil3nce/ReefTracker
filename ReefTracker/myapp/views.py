@@ -4,7 +4,7 @@ from .models import Aquariums
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric, AddAquariumForm, CalciumDosingCalculatorForm, MagnesiumDosingCalculatorForm
+from .forms import RegisterForm, WaterVolumeFormImperial, WaterVolumeFormMetric, AddAquariumForm, CalciumDosingCalculatorForm, MagnesiumDosingCalculatorForm, PhotoForm
 from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator, CalciumDosingCalculator, MagnesiumDosingCalculator
 from django.http import JsonResponse
 from django.utils import timezone
@@ -93,14 +93,31 @@ def deleteaquarium(request, aquarium_id):
 @login_required
 def aquariumview(request, aquarium_id):
     
+    selectedaquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
     
-    try:
-        selectedaquarium = Aquariums.objects.only('id', 'user', 'name', 'size', 'type', 'start_date').get(id=aquarium_id, user=request.user)
-    except Aquariums.DoesNotExist:
-        return HttpResponse("Aquarium not found.", status=404)
-    # recent params (last 3)
-    recent_parameters = WaterParameter.objects.filter(aquarium=selectedaquarium).order_by('-measured_at')[:3]
-    return render(request, "main/aquariumview.html", {"selectedaquarium": selectedaquarium, "recent_parameters": recent_parameters})
+    # Get the single most recent reading for EACH parameter type
+    latest_readings = WaterParameter.objects.filter(
+        aquarium=selectedaquarium
+    ).order_by(
+        'parameter', 
+        '-measured_at'
+    ).distinct(
+        'parameter'
+    )
+
+    # Get the 10 most recent readings overall
+    recent_parameters = WaterParameter.objects.filter(
+        aquarium=selectedaquarium
+    ).order_by('-measured_at')[:10]
+
+    context = {
+        'aquarium': selectedaquarium,
+        'latest_readings': latest_readings,
+        'recent_parameters': recent_parameters,
+    }
+    
+    
+    return render(request, "main/aquariumview.html", context)
 
 
 @login_required
@@ -252,5 +269,65 @@ def parameters_data(request, aquarium_id):
         }],
         'unit': unit,
     })
+
+
+@login_required
+def add_photo(request, aquarium_id):
+    aquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
+    
+    if request.method == 'POST':
+        # Pass the aquarium object to the form
+        form = PhotoForm(request.POST, request.FILES, aquarium=aquarium)
+        if form.is_valid():
+            photo = form.save(commit=False)
+            photo.aquarium = aquarium
+            photo.save()
+            return redirect('aquariumview', aquarium_id=aquarium.id) # Redirect to aquarium detail page
+    else:
+        form = PhotoForm(aquarium=aquarium) # Pass aquarium for filtering
+        
+    return render(request, 'main/add_photo.html', {'form': form, 'aquarium': aquarium})
+
+
+@login_required
+def livestock(request, aquarium_id):
+    aquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
+
+    if request.method == 'POST':
+        form = WaterParameterForm(request.POST)
+        if form.is_valid():
+            wp = form.save(commit=False)
+            wp.aquarium = aquarium
+            wp.save()
+            return redirect('parameters', aquarium_id=aquarium.id)
+    else:
+        form = WaterParameterForm()
+
+    # Filters
+    parameter_filter = request.GET.get('parameter')
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    readings = WaterParameter.objects.filter(aquarium=aquarium)
+    if parameter_filter:
+        readings = readings.filter(parameter=parameter_filter)
+    if start:
+        readings = readings.filter(measured_at__gte=start)
+    if end:
+        readings = readings.filter(measured_at__lte=end)
+
+    readings = readings.order_by('-measured_at')
+
+    context = {
+        'aquarium': aquarium,
+        'form': form,
+        'readings': readings[:200],  # cap initial display
+        'parameter_filter': parameter_filter or '',
+        'start': start or '',
+        'end': end or '',
+        'allowed_units_json': json.dumps(WaterParameter.ALLOWED_UNITS_BY_PARAMETER),
+    }
+    return render(request, 'main/parameters.html', context)
+    
+
 
 
