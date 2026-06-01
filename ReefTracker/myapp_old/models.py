@@ -38,11 +38,11 @@ class Species(models.Model):
 class Livestock(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     species = models.ForeignKey(Species, on_delete=models.SET_NULL, null=True, related_name='livestock_instances')
-    
+    aquarium = models.ForeignKey(Aquariums, on_delete=models.CASCADE, related_name='livestock_items', null=True)
     # If the user has something rare not in your DB, they can type a custom name
     custom_name = models.CharField(max_length=100, blank=True, null=True, help_text="Use this if species is not in the list")
     
-    date_acquired = models.DateField()
+    date_acquired = models.DateField(default=timezone.now)
     notes = models.TextField(blank=True)
     
     # Image handling (assuming you have Pillow installed)

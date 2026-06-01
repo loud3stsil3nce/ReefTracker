@@ -1,8 +1,7 @@
 from django import forms
-
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from .models import Aquariums, CalciumProducts, MagnesiumProducts, WaterParameter, Livestock, Photo
+#from django.contrib.auth.models import User
+#from django.contrib.auth.forms import UserCreationForm
+from .models import Aquariums, WaterParameter, Livestock, Photo
 from datetime import date
 from django.utils import timezone
 
@@ -22,14 +21,15 @@ class AddAquariumForm(forms.ModelForm):
 class AddLivestockForm(forms.ModelForm):
     class Meta:
         model = Livestock
-        fields = ['name', 'species', 'livestock_type', 'date_added', 'health_status', 'notes']
-    livestock_type = forms.ChoiceField(choices=Livestock.LIVESTOCK_TYPES, initial='other')
-    date_added = forms.DateField(
-        widget=forms.SelectDateWidget(years=range(1900, 2030)), 
-        initial=date.today
-        )
-    health_status = forms.CharField(max_length=50, initial='healthy', required=False)
-    notes = forms.CharField(widget=forms.Textarea, required=False)
+        # This tells Django to automatically include every field 
+        # except the ones we explicitly exclude below.
+        fields = '__all__'
+        exclude = ['aquarium', 'created_at', 'updated_at', 'user']
+        
+        widgets = {
+            'date_added': forms.DateInput(attrs={'type': 'date'}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
     
 
 class WaterParameterForm(forms.ModelForm):
@@ -104,7 +104,8 @@ class PhotoForm(forms.ModelForm):
         
         if aquarium:
             # Only show livestock from the current aquarium as choices
-            self.fields['livestock'].queryset = aquarium.livestock.all()
+          #  self.fields['livestock'].queryset = aquarium.livestock.all()
+          self.fields['livestock'].queryset = aquarium.livestock_items.all()
         
         self.fields['livestock'].required = False
         self.fields['livestock'].label = "Tag Livestock (Optional)"

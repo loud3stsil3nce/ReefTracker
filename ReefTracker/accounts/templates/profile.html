@@ -1,4 +1,4 @@
-{% extends "main/base.html" %}
+{% extends "base.html" %}
 {% block title %} Profile Page {% endblock %}
 
 {% block content %}
@@ -26,9 +26,9 @@
         <div class="card-body">
           <h2 class="h5">Actions</h2>
           <div class="d-flex gap-2 flex-wrap">
-            <a href="{% url 'myaquariums' %}" class="btn btn-outline-primary">My Aquariums</a>
-            <a href="{% url 'profile' %}" class="btn btn-outline-secondary disabled">Edit Profile (Coming Soon)</a>
-            <form method="POST" action="{% url 'logout' %}">{% csrf_token %}
+            <a href="{% url 'aquariums:myaquariums' %}" class="btn btn-outline-primary">My Aquariums</a>
+            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary disabled">Edit Profile (Coming Soon)</a>
+            <form method="POST" action="{% url 'accounts:logout' %}">{% csrf_token %}
               <button type="submit" class="btn btn-danger">Logout</button>
             </form>
           </div>

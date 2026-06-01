@@ -1,4 +1,4 @@
-{% extends "main/base.html" %} {% block title %} Home Page {% endblock %} {%
+{% extends "base.html" %} {% block title %} Home Page {% endblock %} {%
 {% load crispy_forms_tags %} {% block content %}
 <div
   class="container-fluid min-vh-100 d-flex flex-column"
@@ -25,7 +25,7 @@
             <p class="fs-5 mb-2">You currently have {{ aquariums|length }} aquarium(s).</p>
             <button onclick="toggleForm()" class="btn btn-primary mb-3">ADD</button>
             <div id="addAquarium" style="display: none">
-              <form method="POST" action="{% url 'home' %}">
+              <form method="POST" action="{% url 'accounts:home' %}">
                 {% csrf_token %}
                 <h4 class="h6">Aquarium Details</h4>
                 {{ form|crispy }}
@@ -50,7 +50,7 @@
     <!-- Row 1: My Aquariums -->
     <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2">
       <h3 class="h5 mb-0">My Aquariums</h3>
-      <a href="{% url 'myaquariums' %}" class="btn btn-sm btn-primary">Open</a>
+      <a href="{% url 'aquariums:myaquariums' %}" class="btn btn-sm btn-primary">Open</a>
     </div>
 
     <!-- Row 2: Quick Tools -->

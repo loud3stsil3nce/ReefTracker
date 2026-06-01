@@ -14,8 +14,30 @@ class Aquariums(models.Model):
     start_date = models.DateField(default=date.today)
     volume_liters = models.FloatField(null=True, blank=True, help_text="Net water volume in liters")
 
+    def __str__(self):
+        return self.name
+
+class Species(models.Model):
+    CATEGORY_CHOICES = [
+        ('FISH', 'Fish'),
+        ('CORAL', 'Coral'),
+        ('INVERT', 'Invertebrate'),
+        ('MACRO', 'Macroalgae'),
+    ]
+    common_name = models.CharField(max_length=40)
+    scientific_name = models.CharField(max_length=40, blank=True, null=True)
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
     
+    class Meta:
+        verbose_name_plural = "Species"
+        ordering = ['category', 'common_name']
+        
+    def __str__(self):
+        return f"{self.common_name} ({self.get_category_display()})"
   
+     
+
+
 class Livestock(models.Model):
     LIVESTOCK_TYPES = [
         ('fish', 'Fish'),
@@ -30,22 +52,19 @@ class Livestock(models.Model):
         ('other', 'Other'),
     ]
     
-    aquarium = models.ForeignKey(Aquariums, on_delete=models.CASCADE, related_name="livestock")
-    name = models.CharField(max_length=100, help_text="Common name of the livestock")
-    species = models.CharField(max_length=100, blank=True, help_text="Scientific name")
-    livestock_type = models.CharField(max_length=20, choices=LIVESTOCK_TYPES, default='other')
-    date_added = models.DateField(default=date.today)
-    health_status = models.CharField(max_length=50, default='healthy', help_text="Current health status")
-    notes = models.TextField(blank=True, help_text="Additional notes about this livestock")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    aquarium = models.ForeignKey(Aquariums, on_delete=models.CASCADE, related_name='livestock_items')
+    species = models.ForeignKey(Species, on_delete=models.SET_NULL, null=True, blank=True, related_name='livestock_instances')
+    custom_name = models.CharField(max_length=100, blank=True, null=True, help_text="Use this if species is not in the list")
+    date_acquired = models.DateField(default=timezone.now)
+    notes = models.TextField(blank=True)
+    image = models.ImageField(upload_to='livestock_images/', blank=True, null=True)
+
     def __str__(self):
-        return f"{self.name} ({self.get_livestock_type_display()})"
-    
-    class Meta:
-        ordering = ['-date_added']
-        
+        if self.species:
+            return f"{self.species.common_name}"
+        return f"{self.custom_name}"
+       
 
 class WaterParameter(models.Model):
     PARAMETER_PH = 'ph'

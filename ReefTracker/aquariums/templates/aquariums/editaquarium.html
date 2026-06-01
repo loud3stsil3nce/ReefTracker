@@ -1,4 +1,4 @@
-{% extends "main/base.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -11,7 +11,7 @@
         {{ form|crispy }}
         <div class="d-flex gap-2">
           <button type="submit" class="btn btn-success">Save Changes</button>
-          <a href="{% url 'myaquariums' %}" class="btn btn-secondary">Cancel</a>
+          <a href="{% url 'aquariums:myaquariums' %}" class="btn btn-secondary">Cancel</a>
         </div>
       </form>
     </div>

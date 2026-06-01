@@ -1,4 +1,4 @@
-{% extends "main/base.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block title %} Registration Page {% endblock %}
 
@@ -17,6 +17,6 @@
     </div>
   </div>
 
-  <p class="mt-3">Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
+  <p class="mt-3">Already have an account? <a href="{% url 'accounts:login' %}">Login here</a>.</p>
 </div>
 {% endblock %}

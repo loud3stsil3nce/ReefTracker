@@ -1,4 +1,4 @@
-{% extends "main/base.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block title %}Parameters{% endblock %}
 
@@ -110,7 +110,7 @@
   let chart;
 
   function buildUrl() {
-    const url = new URL(window.location.origin + '{% url "parameters_data" aquarium.id %}');
+    const url = new URL(window.location.origin + '{% url "aquariums:parameters_data" aquarium.id %}');
     if (paramSelect.value) url.searchParams.set('parameter', paramSelect.value);
     if (startInput.value) url.searchParams.set('start', startInput.value);
     if (endInput.value) url.searchParams.set('end', endInput.value);

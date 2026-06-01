@@ -55,9 +55,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "myapp",
-    "crispy_forms",
-    "crispy_bootstrap5",
+    
+    'accounts',
+    'aquariums',
+    'calculator',
+    
+    'crispy_forms',
+    'crispy_bootstrap5',
+    
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -131,8 +136,9 @@ if not DEBUG:
 
 # ---------- Defaults ----------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-LOGIN_REDIRECT_URL = "/home/"
-LOGOUT_REDIRECT_URL = "/login/"
+LOGIN_URL = "accounts:login"
+LOGIN_REDIRECT_URL = 'accounts:home'
+LOGOUT_REDIRECT_URL = 'landing'
 
 
 

@@ -66,15 +66,15 @@ class AddAquariumForm(forms.ModelForm):
 class AddLivestockForm(forms.ModelForm):
     class Meta:
         model = Livestock
-        fields = ['name', 'species', 'livestock_type', 'date_added', 'health_status', 'notes']
-    livestock_type = forms.ChoiceField(choices=Livestock.LIVESTOCK_TYPES, initial='other')
-    date_added = forms.DateField(
-        widget=forms.SelectDateWidget(years=range(1900, 2030)), 
-        initial=date.today
-        )
-    health_status = forms.CharField(max_length=50, initial='healthy', required=False)
-    notes = forms.CharField(widget=forms.Textarea, required=False)
-    
+        # This tells Django to automatically include every field 
+        # except the ones we explicitly exclude below.
+        fields = '__all__'
+        exclude = ['aquarium', 'created_at', 'updated_at', 'user']
+        
+        widgets = {
+            'date_added': forms.DateInput(attrs={'type': 'date'}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
 
 class WaterParameterForm(forms.ModelForm):
     parameter = forms.ChoiceField(choices=WaterParameter.PARAMETER_CHOICES, label="Parameter")
@@ -142,14 +142,10 @@ class PhotoForm(forms.ModelForm):
         fields = ['image', 'caption', 'livestock']
 
     def __init__(self, *args, **kwargs):
-        # We need the aquarium to filter the livestock choices
         aquarium = kwargs.pop('aquarium', None)
-        super().__init__(*args, **kwargs)
+        super(PhotoForm, self).__init__(*args, **kwargs)
         
         if aquarium:
-            # Only show livestock from the current aquarium as choices
-            self.fields['livestock'].queryset = aquarium.livestock.all()
-        
-        self.fields['livestock'].required = False
-        self.fields['livestock'].label = "Tag Livestock (Optional)"
+            # FIX: Query the Livestock model directly to bypass reverse-relation load errors
+            self.fields['livestock'].queryset = Livestock.objects.filter(aquarium=aquarium)
     

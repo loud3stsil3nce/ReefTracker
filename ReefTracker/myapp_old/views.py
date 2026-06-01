@@ -9,7 +9,7 @@ from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculato
 from django.http import JsonResponse
 from django.utils import timezone
 from .models import WaterParameter
-from .forms import WaterParameterForm
+from .forms import WaterParameterForm, AddLivestockForm
 import json
 def landing(request):
     return render(request, "main/landing.html")
@@ -331,3 +331,31 @@ def livestock(request, aquarium_id):
 
 
 
+@login_required
+def add_livestock(request, aquarium_id):
+    # Securely fetch the aquarium, ensuring it belongs to the logged-in user
+    aquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
+
+    if request.method == 'POST':
+        form = AddLivestockForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Create the Livestock object, but DON'T save it to the DB just yet
+            new_livestock = form.save(commit=False)
+            
+            # Manually attach the secure backend data
+            new_livestock.user = request.user
+            new_livestock.aquarium = aquarium
+            
+            # Now commit to PostgreSQL
+            new_livestock.save()
+            
+            # Redirect back to the aquarium's dashboard (we'll assume you have a view for this)
+            return redirect('profile/myaquariums/<int:aquarium_id>/', aquarium_id=aquarium.id) 
+    else:
+        form = AddLivestockForm()
+
+    context = {
+        'form': form,
+        'aquarium': aquarium
+    }
+    return render(request, 'main/add_livestock.html', context)

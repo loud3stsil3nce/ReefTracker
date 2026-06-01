@@ -19,12 +19,22 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from accounts import views as account_views
 urlpatterns = [
+    # 1. Admin must always be first
     path("admin/", admin.site.urls),
-    path("", include("myapp.urls")),
-    path("", include('django.contrib.auth.urls')),  # Include auth URLs for login, logout, password management
     
+    # Landing page at the root
+    path("", account_views.landing, name="landing"),
+    # 2. Specific apps defined by prefixes
+    path("accounts/", include("accounts.urls")),
+    path("calculators/", include("calculator.urls")),
+    
+    # 3. Built-in Auth (Move this after your custom accounts app to avoid conflicts)
+ #   path("", include('django.contrib.auth.urls')), 
+    
+    # 4. The "Catch-all" (Aquariums) goes LAST
+    path("aquariums/", include("aquariums.urls")),
 ]
 
 
