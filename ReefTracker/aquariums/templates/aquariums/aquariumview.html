@@ -18,6 +18,64 @@ aquarium.name }}{% endblock %} {% block content %}
             <strong>Start Date:</strong> {{ aquarium.start_date }}
           </p>
         </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-body d-flex flex-column">
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <h5 class="card-title mb-0">Livestock</h5>
+                <a
+                  href="{% url 'aquariums:livestock' aquarium.id %}"
+                  class="btn btn-sm btn-outline-primary"
+                  >View All</a
+                >
+              </div>
+              <div class="card-text flex-grow-1">
+                {% if total_livestock > 0 %}
+                <div
+                  class="d-flex justify-content-between border-bottom pb-2 mb-2"
+                >
+                  <span class="text-muted">Total Inhabitants:</span>
+                  <strong>{{ total_livestock }}</strong>
+                </div>
+                <div class="row text-center pt-2">
+                  <div class="col-3">
+                    <div class="fs-5">{{ fish_count }}</div>
+                    <small class="text-muted">Fish</small>
+                  </div>
+                  <div class="col-3">
+                    <div class="fs-5">{{ coral_count }}</div>
+                    <small class="text-muted">Corals</small>
+                  </div>
+                  <div class="col-3">
+                    <div class="fs-5">{{ invert_count }}</div>
+                    <small class="text-muted">Inverts</small>
+                  </div>
+                  <div class="col-3">
+                    <div class="fs-5">{{ macro_count }}</div>
+                    <small class="text-muted">Macro</small>
+                  </div>
+                </div>
+                {% else %}
+                <p class="text-muted text-center my-4">
+                  <em>Tank is currently empty.</em>
+                </p>
+                {% endif %}
+              </div>
+              <div class="mt-4">
+                <a
+                  href="{% url 'aquariums:add_livestock' aquarium.id %}"
+                  class="btn btn-success w-100"
+                >
+                  + Add Livestock
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="card-footer d-flex justify-content-between">
           <a
             href="{% url 'aquariums:editaquarium' aquarium.id %}"
@@ -29,7 +87,10 @@ aquarium.name }}{% endblock %} {% block content %}
             class="btn btn-sm btn-primary"
             >Parameter Log</a
           >
-          <form method="post" action="{% url 'aquariums:deleteaquarium' aquarium.id %}">
+          <form
+            method="post"
+            action="{% url 'aquariums:deleteaquarium' aquarium.id %}"
+          >
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Delete</button>
           </form>
@@ -94,7 +155,8 @@ aquarium.name }}{% endblock %} {% block content %}
       <a
         href="{% url 'aquariums:add_photo' aquarium.id %}"
         class="btn btn-secondary btn-sm mb-3"
-        >Add New Photo</a>
+        >Add New Photo</a
+      >
       <div class="row">
         {% for photo in aquarium.photos.all %}
         <div class="col-md-4 mb-3">
@@ -121,8 +183,6 @@ aquarium.name }}{% endblock %} {% block content %}
         {% endfor %}
       </div>
     </div>
-
-    
   </div>
   {% else %}
   <div class="alert alert-warning">

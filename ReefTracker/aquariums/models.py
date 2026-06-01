@@ -56,6 +56,7 @@ class Livestock(models.Model):
     aquarium = models.ForeignKey(Aquariums, on_delete=models.CASCADE, related_name='livestock_items')
     species = models.ForeignKey(Species, on_delete=models.SET_NULL, null=True, blank=True, related_name='livestock_instances')
     custom_name = models.CharField(max_length=100, blank=True, null=True, help_text="Use this if species is not in the list")
+    quantity = models.PositiveIntegerField(default=1, help_text="How many of this species?")
     date_acquired = models.DateField(default=timezone.now)
     notes = models.TextField(blank=True)
     image = models.ImageField(upload_to='livestock_images/', blank=True, null=True)
@@ -162,7 +163,22 @@ class WaterParameter(models.Model):
         indexes = [
             models.Index(fields=['aquarium', 'parameter', 'measured_at']),
         ]
-        
+# aquariums/models.py
+
+class ParameterTarget(models.Model):
+    aquarium = models.ForeignKey(Aquariums, on_delete=models.CASCADE, related_name='target_zones')
+    # We reuse your existing PARAMETER_CHOICES from the WaterParameter model!
+    parameter = models.CharField(max_length=20, choices=WaterParameter.PARAMETER_CHOICES)
+    
+    min_value = models.FloatField(help_text="Minimum acceptable value")
+    max_value = models.FloatField(help_text="Maximum acceptable value")
+
+    class Meta:
+        # This ensures a tank can only have ONE target range per chemical
+        unique_together = ['aquarium', 'parameter']
+
+    def __str__(self):
+        return f"{self.aquarium.name} - {self.get_parameter_display()} Target"        
         
 class Photo(models.Model):
     aquarium = models.ForeignKey('Aquariums', on_delete=models.CASCADE, related_name='photos')

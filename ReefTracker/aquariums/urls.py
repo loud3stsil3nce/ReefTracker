@@ -16,7 +16,10 @@ urlpatterns = [
     path('<int:aquarium_id>/parameters/data/', views.parameters_data, name='parameters_data'),
     
     # Livestock & Media
-    path('<int:aquarium_id>/livestock/', views.livestock, name='livestock'),
+    path('<int:aquarium_id>/livestock/', views.livestock_list, name='livestock'),
     path('<int:aquarium_id>/add-livestock/', views.add_livestock, name='add_livestock'),
     path('<int:aquarium_id>/add-photo/', views.add_photo, name='add_photo'),
+    path('ajax/load-species/', views.load_species, name='ajax_load_species'),
+    path('<int:aquarium_id>/livestock/<int:livestock_id>/edit/', views.edit_livestock, name='edit_livestock'),
+    path('<int:aquarium_id>/livestock/<int:livestock_id>/delete/', views.delete_livestock, name='delete_livestock'),
 ]

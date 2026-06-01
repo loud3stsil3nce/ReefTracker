@@ -1,7 +1,7 @@
 from django import forms
 #from django.contrib.auth.models import User
 #from django.contrib.auth.forms import UserCreationForm
-from .models import Aquariums, WaterParameter, Livestock, Photo
+from .models import Aquariums, WaterParameter, Livestock, Photo, Species
 from datetime import date
 from django.utils import timezone
 
@@ -19,6 +19,13 @@ class AddAquariumForm(forms.ModelForm):
 
 
 class AddLivestockForm(forms.ModelForm):
+    
+    category_filter = forms.ChoiceField(
+        choices=[('', 'All Categories')] + Species.CATEGORY_CHOICES,
+        required=False,
+        label="Filter by Category"
+    )
+    field_order = ['category_filter', 'species', 'custom_name', 'quantity', 'date_acquired', 'notes', 'image']
     class Meta:
         model = Livestock
         # This tells Django to automatically include every field 
@@ -31,66 +38,37 @@ class AddLivestockForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
     
-
-class WaterParameterForm(forms.ModelForm):
-    parameter = forms.ChoiceField(choices=WaterParameter.PARAMETER_CHOICES, label="Parameter")
-    unit = forms.ChoiceField(choices=[], label="Unit")
+class BulkParameterForm(forms.Form):
+    # Notice this is forms.Form, NOT forms.ModelForm
+    
     measured_at = forms.DateTimeField(
-        label="Measured At",
         initial=timezone.now,
-        widget=forms.DateTimeInput(attrs={"type": "datetime-local"}),
-        required=True,
+        widget=forms.DateTimeInput(
+            # This format strictly drops the seconds from the starting value
+            format='%Y-%m-%dT%H:%M', 
+            attrs={
+                'type': 'datetime-local'
+                # Notice 'step' is completely gone now!
+            }
+        ),
+        label="Date & Time"
     )
-
-    class Meta:
-        model = WaterParameter
-        fields = ["parameter", "value", "unit", "measured_at", "notes"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Set unit choices based on provided parameter from data or instance
-        parameter_key = None
-        if self.data.get("parameter"):
-            parameter_key = self.data.get("parameter")
-        elif self.initial.get("parameter"):
-            parameter_key = self.initial.get("parameter")
-        elif self.instance and self.instance.pk:
-            parameter_key = self.instance.parameter
-
-        allowed = WaterParameter.ALLOWED_UNITS_BY_PARAMETER.get(parameter_key) if parameter_key else None
-        self.fields["unit"].choices = allowed or [("", "Select a unit")]
-
-    def clean(self):
-        cleaned = super().clean()
-        parameter_key = cleaned.get("parameter")
-        unit = cleaned.get("unit")
-        value = cleaned.get("value")
-
-        # Validate unit against parameter
-        allowed_pairs = WaterParameter.ALLOWED_UNITS_BY_PARAMETER.get(parameter_key, [])
-        allowed_values = {code for code, _ in allowed_pairs}
-        if parameter_key and unit and unit not in allowed_values:
-            self.add_error("unit", f"Unit '{unit}' not allowed for parameter '{parameter_key}'.")
-
-        # Bounds by parameter (basic sensible defaults for reefs)
-        bounds = {
-            WaterParameter.PARAMETER_PH: (6.0, 9.0),
-            WaterParameter.PARAMETER_TEMP: (10.0, 35.0),
-            WaterParameter.PARAMETER_SALINITY: (1.0, 40.0),  # accepts sg/ppt/psu; validated loosely here
-            WaterParameter.PARAMETER_DKH: (0.0, 20.0),
-            WaterParameter.PARAMETER_CALCIUM: (200.0, 600.0),
-            WaterParameter.PARAMETER_MAGNESIUM: (800.0, 1800.0),
-            WaterParameter.PARAMETER_NITRATE: (0.0, 500.0),
-            WaterParameter.PARAMETER_PHOSPHATE: (0.0, 10.0),
-            WaterParameter.PARAMETER_AMMONIA: (0.0, 10.0),
-            WaterParameter.PARAMETER_NITRITE: (0.0, 10.0),
-        }
-        if parameter_key in bounds and value is not None:
-            low, high = bounds[parameter_key]
-            if not (low <= value <= high):
-                self.add_error("value", f"Value out of expected range [{low}, {high}].")
-
-        return cleaned
+    
+    ph = forms.FloatField(required=False, label="pH", widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0'}))
+    temp = forms.FloatField(required=False, label="Temperature (°F)", widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0'}))
+    salinity = forms.FloatField(required=False, label="Salinity (sg)", widget=forms.NumberInput(attrs={'step': '0.001', 'min': '1.000'}))
+    
+    dkh = forms.FloatField(required=False, label="Alkalinity (dKH)", widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0'}))
+    calcium = forms.IntegerField(required=False, label="Calcium (ppm)", widget=forms.NumberInput(attrs={'step': '5', 'min': '0'}))
+    magnesium = forms.IntegerField(required=False, label="Magnesium (ppm)", widget=forms.NumberInput(attrs={'step': '10', 'min': '0'}))
+    
+    nitrate = forms.FloatField(required=False, label="Nitrate (ppm)", widget=forms.NumberInput(attrs={'step': '0.5', 'min': '0'}))
+    phosphate = forms.FloatField(required=False, label="Phosphate (ppm)", widget=forms.NumberInput(attrs={'step': '0.01', 'min': '0'}))
+    
+    ammonia = forms.FloatField(required=False, label="Ammonia (ppm)", widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0'}))
+    nitrite = forms.FloatField(required=False, label="Nitrite (ppm)", widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0'}))
+    
+    notes = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 2}))
     
 class PhotoForm(forms.ModelForm):
     class Meta:
