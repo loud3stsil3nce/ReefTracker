@@ -1,89 +1,70 @@
-{% extends "base.html" %} {% block title %} Home Page {% endblock %} {%
-{% load crispy_forms_tags %} {% block content %}
-<div
-  class="container-fluid min-vh-100 d-flex flex-column"
-  style="overflow: visible"
->
-  {% if user.is_authenticated %}
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
 
-  <!-- Welcome Section -->
-  <section class="py-2 bg-light w-100 compact-section">
-    <h1 class="h3 h2-sm h1-md">Welcome, {{ user.username }}!</h1>
-  </section>
+{% block title %}Dashboard{% endblock %}
 
-  <!-- DASHBOARD -->
-  <div class="d-flex flex-column flex-grow-1 compact-section">
-    <h2 class="p-2 display-6 mb-1">Dashboard</h2>
-    <p class="px-2 mb-2">Manage your aquariums and track their health.</p>
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h1 class="h3">Welcome, {{ user.username }}!</h1>
+        <p class="text-muted">Manage your aquariums and track their health.</p>
+    </div>
 
-    <!-- Split Columns Section -->
-    <div class="d-flex flex-row flex-wrap w-100 gap-3 pb-2 compact-section">
-      <!-- Left Column -->
-      <div class="flex-fill" style="min-width: 300px">
-        <div class="card shadow-sm compact-card">
-          <div class="card-body">
-            <p class="fs-5 mb-2">You currently have {{ aquariums|length }} aquarium(s).</p>
-            <button onclick="toggleForm()" class="btn btn-primary mb-3">ADD</button>
-            <div id="addAquarium" style="display: none">
-              <form method="POST" action="{% url 'accounts:home' %}">
-                {% csrf_token %}
-                <h4 class="h6">Aquarium Details</h4>
-                {{ form|crispy }}
-                <button type="submit" class="btn btn-primary mt-2">Register Aquarium</button>
-              </form>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm compact-card h-100">
+                <div class="card-header bg-transparent border-0 pt-3 d-flex justify-content-between align-items-center">
+                    <h3 class="h5 mb-0">My Aquariums</h3>
+                    <button onclick="toggleForm()" class="btn btn-sm btn-primary">Add New</button>
+                </div>
+                
+                <div class="card-body">
+                    <div id="addAquarium" class="mb-3 p-3 border rounded" style="display: none; background: var(--bg-color);">
+                        <form method="POST" action="{% url 'accounts:home' %}">
+                            {% csrf_token %}
+                            <h4 class="h6">Aquarium Details</h4>
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-primary btn-sm mt-2">Save</button>
+                        </form>
+                    </div>
+
+                    {% if aquariums %}
+                        <div class="list-group list-group-flush">
+                            {% for aquarium in aquariums %}
+                                <a href="{% url 'aquariums:myaquariums' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    {{ aquarium.name }}
+                                    <span class="badge bg-primary rounded-pill">Active</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No aquariums yet. Click "Add New" to get started.</p>
+                    {% endif %}
+                </div>
             </div>
-          </div>
         </div>
-      </div>
 
-      <!-- Right Column -->
-       
-      <div class="flex-fill" style="min-width: 300px">
-        <div class="p-3 bg-secondary text-white rounded shadow-sm compact-card">
-          <p>Recent Activity -- Coming Soon</p>
+        <div class="col-lg-4">
+            <div class="card shadow-sm compact-card mb-4">
+                <div class="card-body">
+                    <h4 class="h6 fw-bold mb-3">Quick Tools</h4>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'watervolumecalc' %}" class="btn btn-outline-primary btn-sm">Water Volume</a>
+                        <a href="{% url 'calculators' %}" class="btn btn-outline-primary btn-sm">Dosing Calculator</a>
+                        <a href="{% url 'calculators' %}" class="btn btn-outline-secondary btn-sm">Analytics</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm compact-card">
+                <div class="card-body">
+                    <h4 class="h6 fw-bold mb-3">Recent Activity</h4>
+                    <p class="text-muted small">Coming Soon</p>
+                </div>
+            </div>
         </div>
-      </div>
-      
     </div>
- <!-- Three Sections) -->
-  <div class="w-100">
-    <!-- Row 1: My Aquariums -->
-    <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2">
-      <h3 class="h5 mb-0">My Aquariums</h3>
-      <a href="{% url 'aquariums:myaquariums' %}" class="btn btn-sm btn-primary">Open</a>
-    </div>
-
-    <!-- Row 2: Quick Tools -->
-    
-    <div class="card shadow-sm compact-card mb-3 w-100">
-      <div class="card-body">
-        <p class="fw-bold fs-5 mb-2">Quick Tools</p>
-        <hr>
-        <div class="d-flex flex-row justify-content-around flex-wrap gap-2">
-          <a href="{% url 'watervolumecalc' %}" class="btn btn-outline-primary btn-sm">Water Volume</a>
-          <a href="{% url 'calculators' %}" class="btn btn-outline-primary btn-sm">Dosing</a>
-          <a href="{% url 'calculators' %}" class="btn btn-outline-secondary btn-sm">Analytics</a>
-        </div>
-      </div>
-    </div>
-    
-
-    <!-- Row 3: Recent Activity -->
-    <div class="d-flex align-items-center justify-content-between border-top pt-2 mt-2">
-      <p class="fw-bold mb-0">Recent Activity</p>
-    </div>
-  </div>
 </div>
-  
-
-    
-
-
-  {% else %}
-  <h2>Please log in to manage your aquariums</h2>
-  {% endif %}
-</div>
-
 {% endblock %} {% block script%}
 <script>
   function toggleForm() {

@@ -35,6 +35,10 @@ urlpatterns = [
     
     # 4. The "Catch-all" (Aquariums) goes LAST
     path("aquariums/", include("aquariums.urls")),
+    
+    
+    # This gives allauth control over login/signup/reset routing
+    path('accounts/', include('allauth.urls')),
 ]
 
 

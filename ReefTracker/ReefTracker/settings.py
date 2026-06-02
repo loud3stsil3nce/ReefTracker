@@ -56,6 +56,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    
     'accounts',
     'aquariums',
     'calculator',
@@ -77,6 +82,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = "ReefTracker.urls"
@@ -136,11 +142,42 @@ if not DEBUG:
 
 # ---------- Defaults ----------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-LOGIN_URL = "accounts:login"
-LOGIN_REDIRECT_URL = 'accounts:home'
-LOGOUT_REDIRECT_URL = 'landing'
+LOGIN_URL = "account_login"
+#LOGIN_REDIRECT_URL = 'accounts:home'
+#LOGOUT_REDIRECT_URL = 'landing'
 
 
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+
+
+
+# ==========================================
+# DJANGO-ALLAUTH CONFIGURATION
+# ==========================================
+SITE_ID = 1 # Required by the sites framework
+
+# Authentication backends allow you to log in via email OR username
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Registration Rules (Modern Syntax)
+ACCOUNT_LOGIN_METHODS = {'email', 'username'}
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
+# mandatory
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+
+# Where to send users after they log in or log out
+LOGIN_REDIRECT_URL = 'accounts:home'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'landing' # Assuming 'landing' is your front page URL name
+
+# For local development: Print the verification emails to the terminal instead of actually sending them
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+ACCOUNT_SESSION_REMEMBER = True

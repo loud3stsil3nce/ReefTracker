@@ -1,0 +1,63 @@
+<div class="card shadow-sm h-100 compact-card border-0">
+    <div class="card-header bg-transparent border-0 pt-3 pb-0">
+        <h6 class="mb-0 text-center" style="color: {{ chart_color|default:'#0d6efd' }}">{{ chart_title }}</h6>
+    </div>
+    <div class="card-body" style="position: relative; height: 250px;">
+        <canvas id="{{ chart_id }}"></canvas>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('{{ chart_id }}');
+    
+    // Parse the data passed from Django
+    const labels = {{ chart_labels|safe }};
+    const dataPoints = {{ chart_data|safe }};
+    const targetMin = {{ target_min|default:"null" }};
+    const targetMax = {{ target_max|default:"null" }};
+
+    // Setup Target Zone Annotations if they exist
+    let annotations = {};
+    if (targetMin !== null && targetMax !== null) {
+        annotations = {
+            safeZone: {
+                type: 'box', yMin: targetMin, yMax: targetMax,
+                backgroundColor: 'rgba(40, 167, 69, 0.1)', borderWidth: 0,
+            }
+        };
+    }
+
+    new Chart(ctx, {
+        type: 'line',
+        data: { 
+            labels: labels, 
+            datasets: [{
+                label: '{{ chart_title }}',
+                data: dataPoints,
+                borderColor: '{{ chart_color|default:"#0d6efd" }}',
+                backgroundColor: '{{ chart_color|default:"#0d6efd" }}40', // Adds transparency for fill
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true
+            }] 
+        },
+        options: {
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { display: false }, 
+                annotation: { annotations: annotations } 
+            },
+            scales: {
+                x: { display: true }, // Set to false if you want it cleaner
+                y: { 
+                    // Dynamic scaling
+                    suggestedMin: Math.min(...dataPoints.filter(n => n !== null)) * 0.95,
+                    suggestedMax: Math.max(...dataPoints.filter(n => n !== null)) * 1.05
+                }
+            }
+        }
+    });
+});
+</script>

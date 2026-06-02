@@ -1,7 +1,7 @@
 from django import forms
 #from django.contrib.auth.models import User
 #from django.contrib.auth.forms import UserCreationForm
-from .models import Aquariums, WaterParameter, Livestock, Photo, Species
+from .models import Aquariums, WaterParameter, Livestock, Photo, Species, ParameterTarget
 from datetime import date
 from django.utils import timezone
 
@@ -56,7 +56,7 @@ class BulkParameterForm(forms.Form):
     
     ph = forms.FloatField(required=False, label="pH", widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0'}))
     temp = forms.FloatField(required=False, label="Temperature (°F)", widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0'}))
-    salinity = forms.FloatField(required=False, label="Salinity (sg)", widget=forms.NumberInput(attrs={'step': '0.001', 'min': '1.000'}))
+    salinity = forms.FloatField(required=False, label="Salinity (sg)", widget=forms.NumberInput(attrs={'step': '0.0001', 'min': '1.0000'}))
     
     dkh = forms.FloatField(required=False, label="Alkalinity (dKH)", widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0'}))
     calcium = forms.IntegerField(required=False, label="Calcium (ppm)", widget=forms.NumberInput(attrs={'step': '5', 'min': '0'}))
@@ -69,7 +69,22 @@ class BulkParameterForm(forms.Form):
     nitrite = forms.FloatField(required=False, label="Nitrite (ppm)", widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0'}))
     
     notes = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 2}))
-    
+ 
+ 
+class ParameterTargetForm(forms.ModelForm):
+    class Meta:
+        model = ParameterTarget
+        fields = ['parameter', 'min_value', 'max_value']
+        
+        # We add a tiny step so users can input decimals like 8.2 or 0.03
+        widgets = {
+            'min_value': forms.NumberInput(attrs={'step': '0.0001'}),
+            'max_value': forms.NumberInput(attrs={'step': '0.0001'}),
+        }
+
+
+
+   
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = Photo

@@ -4,8 +4,8 @@ from django.utils import timezone
 from django.utils.dateformat import DateFormat
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .models import Aquariums, WaterParameter, Species, Livestock
-from .forms import AddLivestockForm, AddAquariumForm, PhotoForm, BulkParameterForm
+from .models import Aquariums, WaterParameter, Species, Livestock, ParameterTarget
+from .forms import AddLivestockForm, AddAquariumForm, PhotoForm, BulkParameterForm, ParameterTargetForm
 import json
 
 
@@ -64,6 +64,8 @@ def aquariumview(request, aquarium_id):
         aquarium=aquarium
     ).order_by('-measured_at')[:10]
     
+    target_form = ParameterTargetForm()
+    
     total_livestock = aquarium.livestock_items.aggregate(total=Sum('quantity'))['total'] or 0
     fish_count = aquarium.livestock_items.filter(species__category='FISH').aggregate(total=Sum('quantity'))['total'] or 0
     coral_count = aquarium.livestock_items.filter(species__category='CORAL').aggregate(total=Sum('quantity'))['total'] or 0
@@ -74,6 +76,7 @@ def aquariumview(request, aquarium_id):
         'aquarium': aquarium,
         'latest_readings': latest_readings,
         'recent_parameters': recent_parameters,
+        'target_form': target_form,
 
         'total_livestock': total_livestock,
         'fish_count': fish_count,
@@ -248,8 +251,26 @@ def parameters_data(request, aquarium_id):
         'target_zones': target_zones
     })
      
+@login_required
+def update_target(request, aquarium_id):
+    aquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
     
-
+    if request.method == 'POST':
+        form = ParameterTargetForm(request.POST)
+        if form.is_valid():
+            target, created = ParameterTarget.objects.update_or_create(
+                aquarium=aquarium,
+                parameter=form.cleaned_data['parameter'],
+                defaults={
+                    'min_value': form.cleaned_data['min_value'],
+                    'max_value': form.cleaned_data['max_value']
+                }
+            )
+            # NEW: Return a background JSON response instead of reloading the page!
+            return JsonResponse({'status': 'success'})
+            
+        # If the form fails validation, send back an error
+        return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
     
 @login_required
 def add_parameter_log(request, aquarium_id):

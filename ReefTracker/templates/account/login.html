@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-header text-white text-center py-3" style="background-color: #2388CB;">
+                    <h3 class="mb-0">Welcome Back</h3>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <form class="login" method="POST" action="{% url 'account_login' %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+                        
+                        <div class="d-grid mt-4 pt-2">
+                            <button class="btn btn-primary btn-lg" type="submit">Sign In</button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <p class="mb-1">Don't have an account?</p>
+                        <a href="{% url 'account_signup' %}" class="text-decoration-none" style="color: #2388CB; font-weight: 500;">Create one here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

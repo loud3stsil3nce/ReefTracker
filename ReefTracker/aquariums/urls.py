@@ -14,6 +14,7 @@ urlpatterns = [
     # Parameters
     path('<int:aquarium_id>/parameters/', views.parameters, name='parameters'),
     path('<int:aquarium_id>/parameters/data/', views.parameters_data, name='parameters_data'),
+    path('<int:aquarium_id>/target/', views.update_target, name='update_target'),
     
     # Livestock & Media
     path('<int:aquarium_id>/livestock/', views.livestock_list, name='livestock'),

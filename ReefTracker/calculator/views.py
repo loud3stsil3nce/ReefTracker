@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import WaterVolumeFormImperial, WaterVolumeFormMetric, CalciumDosingCalculatorForm, MagnesiumDosingCalculatorForm
+from .forms import WaterVolumeFormImperial, WaterVolumeFormMetric, DosingCalculatorForm
 from .utils import inchToCm, cmToInch, inchToFeet, RectangleWaterVolumeCalculator, CalciumDosingCalculator, MagnesiumDosingCalculator
 
 
@@ -42,50 +42,39 @@ def watervolumecalc(request):
         form = WaterVolumeFormImperial() if form_unit == "imperial" else WaterVolumeFormMetric()
     return render(request, "calculator/watervolume.html", {"form_unit": form_unit, "form": form, "result": result})
 
-@login_required        
-def calciumcalc(request):
+# --- THE NEW UNIFIED DOSING VIEW ---
+def dosing_calculator_view(request):
     result = None
     
-    if request.method == "POST":
-        form = CalciumDosingCalculatorForm(request.POST)
+    if request.method == 'POST':
+        form = DosingCalculatorForm(request.POST)
         if form.is_valid():
-            cleaned = form.cleaned_data
-            product = cleaned.get("product")
-            currentPPM = float(cleaned.get("currentPPM"))
-            targetPPM = float(cleaned.get("targetPPM"))
-            waterVolumeL = float(cleaned.get("waterVolumeMetric"))
-            solutionPPM = float(product.PPMPerLiter)
+            water_volume = form.cleaned_data['waterVolumeMetric']
+            current_level = form.cleaned_data['currentPPM']
+            target_level = form.cleaned_data['targetPPM']
+            product = form.cleaned_data['product'] # This is the DosingProduct database object
+
+            # 1. Calculate the required increase
+            increase_needed = target_level - current_level
+
+            # 2. The Chemistry Math
+            # Formula: (Volume in L) * (Desired Increase) / (Product PPM per 1ml in 1L)
+            dose_in_ml = (water_volume * increase_needed) / product.PPMPerLiter
+
+            # 3. Round to 1 decimal place for a clean UI
+            required_dose = round(dose_in_ml, 1)
             
-            ppmIncrease = targetPPM - currentPPM
-            dosage = round(CalciumDosingCalculator(ppmIncrease, waterVolumeL, solutionPPM), 2)
-            result = True
-            return render(request, "calculator/calciumdosing.html", {"form": form, "result": result, "dosage": dosage if result else None})
-            
+            result = {
+                'dose': required_dose,
+                'product_name': product.name,
+                'category': product.get_category_display(),
+                'increase': increase_needed,
+            }
     else:
-        form = CalciumDosingCalculatorForm() 
-    return render(request, "calculator/calciumdosing.html", {"form": form, "result": result, "dosage": None})
+        form = DosingCalculatorForm()
 
-
-
-@login_required
-def magnesiumcalc(request):
-    result = None
-    
-    if request.method == "POST":
-        form = MagnesiumDosingCalculatorForm(request.POST)
-        if form.is_valid():
-            cleaned = form.cleaned_data
-            product = cleaned.get("product")
-            currentPPM = float(cleaned.get("currentPPM"))
-            targetPPM = float(cleaned.get("targetPPM"))
-            waterVolumeL = float(cleaned.get("waterVolumeMetric"))
-            solutionPPM = float(product.PPMPerLiter)
-            
-            ppmIncrease = targetPPM - currentPPM
-            dosage = round(MagnesiumDosingCalculator(ppmIncrease, waterVolumeL, solutionPPM), 2)
-            result = True
-            return render(request, "calculator/magnesiumdosing.html", {"form": form, "result": result, "dosage": dosage if result else None})
-            
-    else:
-        form = MagnesiumDosingCalculatorForm() 
-    return render(request, "calculator/magnesiumdosing.html", {"form": form, "result": result, "dosage": None})
+    context = {
+        'form': form,
+        'result': result
+    }
+    return render(request, 'calculator/dosing_form.html', context)

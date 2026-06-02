@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm # Ensure this is moved from main to accounts/forms.py
+from .forms import RegisterForm, UserEditForm
 from aquariums.models import Aquariums
 from aquariums.forms import AddAquariumForm
 def landing(request):
@@ -22,16 +22,22 @@ def home(request):
     return render(request, "home.html", {"aquariums": aquariums, "form": form})
 
 
-def sign_up(request):
-    if request.method == "POST":
-        form = RegisterForm(request.POST)
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        # The 'instance' keyword tells Django to update this specific user, not create a new one!
+        form = UserEditForm(request.POST, instance=request.user)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
+            form.save()
+            return redirect('accounts:profile')
     else:
-        form = RegisterForm()
-    return render(request, "sign_up.html", {"form": form})
+        # Pre-fill the form with the user's current data when they load the page
+        form = UserEditForm(instance=request.user)
+
+    return render(request, 'accounts/edit_profile.html', {'form': form})
+
+
 
 @login_required
 def profile(request):

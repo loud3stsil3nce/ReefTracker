@@ -1,35 +1,47 @@
-{% extends "base.html" %}
-{% block title %} Profile Page {% endblock %}
+{% extends "base.html" %} 
+{% block title %}Profile{% endblock %}
 
 {% block content %}
 <div class="container py-4">
-  <h1 class="h3 mb-3">Profile</h1>
-  {% if user.is_authenticated %}
-    <p class="fs-5">Welcome, {{ user.username }}!</p>
-  {% endif %}
-  <div class="row g-3">
+  <div class="mb-4">
+    <h1 class="h3">Profile</h1>
+    <p class="text-muted">Manage your personal account settings.</p>
+  </div>
+
+  <div class="row g-4">
     <div class="col-12 col-md-6">
-      <div class="card shadow-sm h-100">
+      <div class="card shadow-sm h-100 compact-card">
         <div class="card-body">
-          <h2 class="h5">Your Details</h2>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
-            <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
-            <li class="list-group-item"><strong>First Name:</strong> {{ user.first_name }}</li>
-            <li class="list-group-item"><strong>Last Name:</strong> {{ user.last_name }}</li>
+          <h2 class="h5 mb-3">Your Details</h2>
+          <ul class="list-group list-group-flush theme-bg">
+            <li class="list-group-item d-flex justify-content-between">
+                <span><strong>Username:</strong></span> <span>{{ user.username }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+                <span><strong>Email:</strong></span> <span>{{ user.email }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+                <span><strong>First Name:</strong></span> <span>{{ user.first_name }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+                <span><strong>Last Name:</strong></span> <span>{{ user.last_name }}</span>
+            </li>
           </ul>
         </div>
       </div>
     </div>
+
     <div class="col-12 col-md-6">
-      <div class="card shadow-sm h-100">
+      <div class="card shadow-sm h-100 compact-card">
         <div class="card-body">
-          <h2 class="h5">Actions</h2>
-          <div class="d-flex gap-2 flex-wrap">
-            <a href="{% url 'aquariums:myaquariums' %}" class="btn btn-outline-primary">My Aquariums</a>
-            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary disabled">Edit Profile (Coming Soon)</a>
-            <form method="POST" action="{% url 'accounts:logout' %}">{% csrf_token %}
-              <button type="submit" class="btn btn-danger">Logout</button>
+          <h2 class="h5 mb-3">Account Actions</h2>
+          <div class="d-grid gap-2">
+            <a href="{% url 'aquariums:myaquariums' %}" class="btn btn-primary">My Aquariums</a>
+            <a href="{% url 'accounts:edit_profile' %}" class="btn btn-outline-primary">Edit Profile</a>
+            <hr class="my-2">
+            <form method="POST" action="{% url 'account_logout' %}" class="d-grid">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-danger">Logout</button>
             </form>
           </div>
         </div>

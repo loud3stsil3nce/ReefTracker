@@ -29,4 +29,23 @@ class MagnesiumProducts(models.Model):
     
     class Meta:
         ordering = ['name']
+        
+        
+class DosingProduct(models.Model):
+    CATEGORY_CHOICES = [
+        ('CAL', 'Calcium'),
+        ('MAG', 'Magnesium'),
+        ('ALK', 'Alkalinity'),
+    ]
+
+    name = models.CharField(max_length=100)
+    category = models.CharField(max_length=3, choices=CATEGORY_CHOICES)
+    description = models.CharField(max_length=200)
+    PPMPerLiter = models.FloatField(help_text="PPM increase per 1ml in 1 Liter of water")
+    
+    def __str__(self):
+        return f"[{self.get_category_display()}] {self.name}"
+    
+    class Meta:
+        ordering = ['category', 'name']
     

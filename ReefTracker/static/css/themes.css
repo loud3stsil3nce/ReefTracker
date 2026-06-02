@@ -1,0 +1,214 @@
+/* 1. Define your palette variables */
+:root {
+    --bg-color: #fbfbfd;
+    --text-color: #1d1d1f;
+    --card-bg: #ffffff;
+    --card-border: #d2d2d7;
+}
+
+[data-theme="dark"] {
+    --bg-color: #0d0d0d;
+    --text-color: #ffffff;
+    --card-bg: #1a1a1a;
+    --card-border: #404040;
+}
+
+[data-theme="aquatic"] {
+    --bg-color: #001219;
+    --text-color: #ffffff;
+    --card-bg: #002844;
+    --card-border: #005f73;
+}
+
+/* 2. FORCE the body and cards to use the variables */
+/* This is the key: we target the body and cards based on the attribute */
+html[data-theme="dark"] body, 
+html[data-theme="aquatic"] body {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Make sure all cards update their background and border */
+[data-theme="dark"] .card, [data-theme="aquatic"] .card,
+[data-theme="dark"] .theme-bg, [data-theme="aquatic"] .theme-bg {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--card-border) !important;
+}
+
+/* 3. Universal text color force */
+body, h1, h2, h3, h4, p, span, a, label {
+    color: var(--text-color) !important;
+}
+/* Ensure muted text is always visible in all themes */
+.text-muted {
+    color: var(--text-muted) !important;
+}
+/* Force the dropdown menu to match your theme cards */
+[data-theme="dark"] .dropdown-menu,
+[data-theme="aquatic"] .dropdown-menu {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+}
+
+/* Force the dropdown items (text) to match your theme text color */
+[data-theme="dark"] .dropdown-item,
+[data-theme="aquatic"] .dropdown-item {
+    color: var(--text-color) !important;
+}
+
+/* Make hover states in the dropdown look better */
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="aquatic"] .dropdown-item:hover {
+    background-color: var(--primary-accent) !important;
+    color: #ffffff !important;
+}
+
+/* Force table backgrounds and text to match the theme */
+.table, .table-striped > tbody > tr:nth-of-type(odd), 
+.table > :not(caption) > * > * {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--card-border) !important;
+}
+
+/* Ensure the text inside table cells also respects the theme */
+.table td, .table th {
+    color: var(--text-color) !important;
+}
+/* Force list-group-items to match the card background */
+.list-group-item {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--card-border) !important;
+}
+
+/* Ensure the muted timestamp text remains readable */
+.list-group-item .text-muted {
+    color: var(--text-muted) !important;
+}
+
+.theme-footer {
+    height: 80px; /* Fixed height for consistency */
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;    /* Centers vertically */
+    margin-top: auto;       /* Pushes footer to the bottom of the page */
+    background-color: var(--card-bg);
+    border-top: 1px solid var(--card-border);
+    flex-shrink: 0;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures body is at least the height of the screen */
+}
+
+.content-wrapper {
+    flex: 1 0 auto; /* Pushes the footer down when content is short */
+}
+
+
+
+
+
+
+.spaced {
+    justify-content: space-between;
+}
+/* Only add margin on screens wider than 992px (Bootstrap's lg breakpoint) */
+@media (min-width: 992px) {
+    .navbar-nav .nav-item {
+        margin-left: 1.5rem;
+    }
+    .navbar-brand {
+        margin-right: 2rem;
+    }
+}
+
+/* On mobile (smaller than 992px), reset margins so the hamburger menu stays clean */
+@media (max-width: 991.98px) {
+    .navbar-nav .nav-item {
+        margin-left: 0;
+        padding: 0.5rem 0; /* Add vertical breathing room instead */
+    }
+    .navbar-collapse {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+}
+
+/* Ensure the brand has enough room too */
+.navbar-brand {
+    margin-right: 2rem;
+}
+/* Better dropdown spacing */
+.dropdown-menu {
+    margin-top: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+/* Make icons in the dropdown align better */
+.dropdown-item i {
+    width: 20px; /* Ensures all icons have the same width so text lines up perfectly */
+    text-align: center;
+}
+/* Style the mobile menu container */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background-color: var(--card-bg) !important;
+        padding: 1rem;
+        margin-top: 1rem;
+        border: 1px solid var(--card-border);
+        border-radius: 0.5rem;
+        box-shadow: var(--bs-box-shadow);
+        position: absolute; /* Keeps it from pushing content around */
+        top: 60px;          /* Starts exactly below your navbar */
+        left: 0;
+        width: 100%;
+        z-index: 1050;      /* Ensures it sits on top of everything */
+        background-color: var(--bg-color) !important; /* Use body background for consistency */
+        border-bottom: 1px solid var(--card-border);
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    
+    
+    /* Ensure links inside the mobile menu have good contrast */
+    .navbar-nav .nav-link {
+        color: var(--text-color) !important;
+        padding: 0.5rem 1rem !important;
+    }
+    .navbar {
+        background-color: var(--bg-color) !important;
+    }
+}
+
+/* Dashboard spacing */
+.compact-section {
+    margin-bottom: 2rem !important;
+}
+
+/* Make the dashboard titles pop */
+h2.display-6 {
+    font-weight: 700;
+    border-left: 4px solid var(--primary-accent);
+    padding-left: 1rem !important;
+}
+
+/* Ensure modal text is readable in all themes */
+.modal-content {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+/* Fix modal close button color */
+.btn-close {
+    filter: invert(var(--invert-level)); /* Use if needed, or set to white */
+}
