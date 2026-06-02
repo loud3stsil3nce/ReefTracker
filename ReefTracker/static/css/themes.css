@@ -212,3 +212,16 @@ h2.display-6 {
 .btn-close {
     filter: invert(var(--invert-level)); /* Use if needed, or set to white */
 }
+
+/* This forces the lightbox container to center vertically */
+#lightboxOverlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#lightbox {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin-top: 0 !important;
+}

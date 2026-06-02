@@ -16,6 +16,20 @@
       html, body { height: 100%; margin: 0; }
       body { min-height: 100vh; display: flex; flex-direction: column; }
       .content-wrapper { flex: 1 0 auto; }
+      
+      #lightboxOverlay {
+        display: flex;
+        align-items: center;
+        justify-content: center; 
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px); 
+        background-color: rgba(0, 0, 0, 0.6) !important;}
+
+      #lightbox {
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        margin-top: 0 !important;
+      }
     </style>
     <script>
         (function() {
@@ -23,6 +37,12 @@
             document.documentElement.setAttribute('data-theme', savedTheme);
         })();
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- lightbox cdn images hover-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+
   </head>
   <body>
     <!-- Navbar -->

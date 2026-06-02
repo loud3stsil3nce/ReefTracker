@@ -65,7 +65,9 @@ class Livestock(models.Model):
         if self.species:
             return f"{self.species.common_name}"
         return f"{self.custom_name}"
-       
+    
+
+
 
 class WaterParameter(models.Model):
     PARAMETER_PH = 'ph'
@@ -179,7 +181,18 @@ class ParameterTarget(models.Model):
 
     def __str__(self):
         return f"{self.aquarium.name} - {self.get_parameter_display()} Target"        
-        
+
+
+
+class Tag(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+    
+    
+         
 class Photo(models.Model):
     aquarium = models.ForeignKey('Aquariums', on_delete=models.CASCADE, related_name='photos')
     livestock = models.ForeignKey('Livestock', on_delete=models.SET_NULL, null=True, blank=True, related_name='photos')
@@ -188,7 +201,8 @@ class Photo(models.Model):
     image = models.ImageField(upload_to='photos/')
     caption = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    tags = models.ManyToManyField(Tag, blank=True, related_name='photos')
+    
     class Meta:
         ordering = ['-created_at']
 

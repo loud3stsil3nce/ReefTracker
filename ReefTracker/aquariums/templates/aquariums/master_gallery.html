@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+    <h2>All Photos</h2>
+    
+    <div class="mb-4">
+        <h5>Filter by tags:</h5>
+        {% for tag in all_tags %}
+            <button class="btn btn-outline-primary btn-sm tag-filter" data-tag-id="{{ tag.id }}">
+                {{ tag.name }}
+            </button>
+        {% endfor %}
+        <a href="{% url 'aquariums:master_gallery' %}" class="btn btn-link btn-sm">Clear Filters</a>
+    </div>
+
+    <div class="row g-3" id="gallery-grid">
+        {% include 'components/_gallery_grid.html' %}
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('.tag-filter').click(function(e) {
+        e.preventDefault();
+        
+        // 1. Toggle the visual "active" state of the button
+        $(this).toggleClass('active');
+        if ($(this).hasClass('active')) {
+            $(this).removeClass('btn-outline-primary').addClass('btn-primary');
+        } else {
+            $(this).removeClass('btn-primary').addClass('btn-outline-primary');
+        }
+
+        // 2. Gather all active tag IDs into an array
+        let selectedTags = [];
+        $('.tag-filter.active').each(function() {
+            selectedTags.push($(this).data('tag-id'));
+        });
+
+        // 3. Send the array to Django
+        $.ajax({
+            url: "{% url 'aquariums:master_gallery' %}",
+            data: { 'tags': selectedTags },
+            traditional: true, // CRITICAL: Tells jQuery to format arrays correctly for Django
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            success: function(data) {
+                $('#gallery-grid').html(data);
+            },
+            error: function(error) {
+                console.log("AJAX Error:", error);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

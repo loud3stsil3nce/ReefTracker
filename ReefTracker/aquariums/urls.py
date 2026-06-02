@@ -23,4 +23,8 @@ urlpatterns = [
     path('ajax/load-species/', views.load_species, name='ajax_load_species'),
     path('<int:aquarium_id>/livestock/<int:livestock_id>/edit/', views.edit_livestock, name='edit_livestock'),
     path('<int:aquarium_id>/livestock/<int:livestock_id>/delete/', views.delete_livestock, name='delete_livestock'),
+    path('<int:aquarium_id>/livestock/<int:livestock_id>/details/', views.livestock_detail, name='livestock_detail'),
+    path('<int:aquarium_id>/livestock/<int:livestock_id>/photo/<int:photo_id>/delete/', views.delete_livestock_photo, name='delete_livestock_photo'),
+    path('gallery/', views.master_gallery, name='master_gallery'),
+    path('tags/quick-add/', views.quick_add_tag, name='quick_add_tag'),
 ]

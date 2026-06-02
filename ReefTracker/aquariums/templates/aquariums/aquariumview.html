@@ -112,6 +112,7 @@
                     {% else %}
                     <p class="text-muted text-center py-4 mb-0">No history available.</p>
                     {% endif %}
+
                 </div>
             </div>
         </div>
@@ -119,12 +120,12 @@
 
     <div class="row g-4 mt-3">
       <div class="col-12 col-lg-6">
-        {% include 'components/_chart.html' with chart_id="alkChart" chart_title="Alkalinity (dKH)" chart_color="#0d6efd" chart_labels=alk_dates chart_data=alk_values target_min=alk_target_min target_max=alk_target_max %}
-      </div>
+  {% include 'components/_chart.html' with chart_id="alkChart" chart_title="Alkalinity (dKH)" chart_color="#0d6efd" chart_labels=alk_dates|safe chart_data=alk_values|safe target_min=alk_target_min target_max=alk_target_max %}
+</div>
 
-      <div class="col-12 col-lg-6">
-        {% include 'components/_chart.html' with chart_id="calcChart" chart_title="Calcium (ppm)" chart_color="#198754" chart_labels=calc_dates chart_data=calc_values target_min=calc_target_min target_max=calc_target_max %}
-      </div>
+<div class="col-12 col-lg-6">
+  {% include 'components/_chart.html' with chart_id="calcChart" chart_title="Calcium (ppm)" chart_color="#198754" chart_labels=calc_dates|safe chart_data=calc_values|safe target_min=calc_target_min target_max=calc_target_max %}
+</div>
     </div>
 
     <div class="mt-5 pt-3 border-top">
@@ -264,6 +265,10 @@
     }
 })();
 </script>
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+{% endblock %}
 
 {% endblock %}
 

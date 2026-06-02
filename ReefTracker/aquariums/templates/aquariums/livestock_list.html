@@ -55,6 +55,12 @@
                   href="{% url 'aquariums:edit_livestock' aquarium.id item.id %}"
                   class="btn btn-sm btn-outline-primary"
                   >Edit</a>
+
+                <a href="{% url 'aquariums:livestock_detail' aquarium_id=item.aquarium.id livestock_id=item.id %}" 
+                  class="btn btn-outline-primary btn-sm">
+                  View Details
+                </a>
+
                 <a href="{% url 'aquariums:delete_livestock' aquarium.id item.id %}"
                   class="btn btn-sm btn-outline-danger"
                   >Remove</a>

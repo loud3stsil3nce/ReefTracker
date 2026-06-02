@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.utils import timezone
 from django.utils.dateformat import DateFormat
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .models import Aquariums, WaterParameter, Species, Livestock, ParameterTarget
-from .forms import AddLivestockForm, AddAquariumForm, PhotoForm, BulkParameterForm, ParameterTargetForm
+from .models import Aquariums, WaterParameter, Species, Livestock, ParameterTarget, Photo, Tag
+from .forms import AddLivestockForm, AddAquariumForm, PhotoForm, BulkParameterForm, ParameterTargetForm, PhotoUploadForm, TagForm
 import json
 
 
@@ -72,6 +72,32 @@ def aquariumview(request, aquarium_id):
     invert_count = aquarium.livestock_items.filter(species__category='INVERT').aggregate(total=Sum('quantity'))['total'] or 0
     macro_count = aquarium.livestock_items.filter(species__category='MACRO').aggregate(total=Sum('quantity'))['total'] or 0
     
+    
+    # 1. Fetch Alkalinity (Get 10 newest, then reverse for chronological charting)
+    alk_readings = list(WaterParameter.objects.filter(
+        aquarium=aquarium, 
+        parameter=WaterParameter.PARAMETER_DKH
+    ).order_by('-measured_at')[:10])
+    alk_readings.reverse() # Flips it left-to-right
+    
+    alk_dates = json.dumps([r.measured_at.strftime('%b %d') for r in alk_readings])
+    alk_values = json.dumps([r.value for r in alk_readings])
+
+    # 2. Fetch Calcium (Get 10 newest, then reverse for chronological charting)
+    calc_readings = list(WaterParameter.objects.filter(
+        aquarium=aquarium, 
+        parameter=WaterParameter.PARAMETER_CALCIUM
+    ).order_by('-measured_at')[:10])
+    calc_readings.reverse() # Flips it left-to-right
+    
+    calc_dates = json.dumps([r.measured_at.strftime('%b %d') for r in calc_readings])
+    calc_values = json.dumps([r.value for r in calc_readings])
+
+    # Optionally, fetch targets for these specific parameters
+    alk_target = ParameterTarget.objects.filter(aquarium=aquarium, parameter=WaterParameter.PARAMETER_DKH).first()
+    calc_target = ParameterTarget.objects.filter(aquarium=aquarium, parameter=WaterParameter.PARAMETER_CALCIUM).first()
+    
+    
     context = {
         'aquarium': aquarium,
         'latest_readings': latest_readings,
@@ -82,7 +108,19 @@ def aquariumview(request, aquarium_id):
         'fish_count': fish_count,
         'coral_count': coral_count,
         'invert_count': invert_count,
-        'macro_count': macro_count,        
+        'macro_count': macro_count,  
+        
+        'alk_dates': alk_dates,
+        'alk_values': alk_values,
+        'alk_target_min': alk_target.min_value if alk_target else 'null',
+        'alk_target_max': alk_target.max_value if alk_target else 'null',
+        
+        'calc_dates': calc_dates,
+        'calc_values': calc_values,
+        'calc_target_min': calc_target.min_value if calc_target else 'null',
+        'calc_target_max': calc_target.max_value if calc_target else 'null',
+        
+              
     }
     
     
@@ -402,6 +440,41 @@ def delete_livestock(request, aquarium_id, livestock_id):
 
 
 @login_required
+def livestock_detail(request, aquarium_id, livestock_id):
+    inhabitant = get_object_or_404(Livestock, pk=livestock_id, user=request.user)
+    aquarium = get_object_or_404(Aquariums, pk=aquarium_id, user=request.user) # Fetch the tank
+    
+    if request.method == 'POST':
+        form = PhotoUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # 1. Save photo metadata (but don't commit to database yet)
+            photo = form.save(commit=False)
+            photo.aquarium = inhabitant.aquarium
+            photo.livestock = inhabitant
+            
+            # 2. Save the photo to the database ONCE
+            photo.save()
+            
+            # 3. Save only the tags selected in the form
+            form.save_m2m() 
+            
+            # 4. Redirect immediately to prevent double-submissions if user refreshes
+            return redirect('aquariums:livestock_detail', aquarium_id=aquarium_id, livestock_id=livestock_id)
+    else:
+        form = PhotoUploadForm()
+        
+    photos = Photo.objects.filter(livestock=inhabitant).order_by('-created_at')
+    
+    return render(request, 'livestock/livestock_detail.html', {
+        'inhabitant': inhabitant,
+        'photos': photos,
+        'form': form
+    })
+
+
+
+
+@login_required
 def add_photo(request, aquarium_id):
     aquarium = get_object_or_404(Aquariums, id=aquarium_id, user=request.user)
     
@@ -419,6 +492,89 @@ def add_photo(request, aquarium_id):
     return render(request, 'aquariums/add_photo.html', {'form': form, 'aquarium': aquarium})
 
 
+@login_required
+def create_tag(request):
+    if request.method == 'POST':
+        form = TagForm(request.POST)
+        if form.is_valid():
+            tag = form.save(commit=False)
+            tag.user = request.user
+            tag.save()
+            return redirect('aquariums:gallery') # Adjust to your gallery URL
+    else:
+        form = TagForm()
+    return render(request, 'aquariums/create_tag.html', {'form': form})
+
+
+def tagged_photos_view(request):
+    # Get tag IDs from URL query parameters (e.g., ?tags=1,2,3)
+    tag_ids = request.GET.getlist('tags') 
+    
+    photos = Photo.objects.filter(livestock__user=request.user)
+    
+    if tag_ids:
+        # Filter for photos that contain all selected tags
+        photos = photos.filter(tags__id__in=tag_ids).annotate(
+            num_tags=Count('tags')
+        ).filter(num_tags=len(tag_ids))
+        
+    return render(request, 'aquariums/photo_gallery.html', {'photos': photos})
+
+@login_required
+def quick_add_tag(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        tag = Tag.objects.create(user=request.user, name=name)
+        return JsonResponse({'id': tag.id, 'name': tag.name})
+
+
+def gallery_view(request):
+    photos = Photo.objects.filter(livestock__user=request.user)
+    tag_ids = request.GET.getlist('tags')
+    
+    if tag_ids:
+        # Get photos that have ALL the selected tags
+        for tag_id in tag_ids:
+            photos = photos.filter(tags__id=tag_id)
+            
+    return render(request, 'aquariums/photo_gallery.html', {
+        'photos': photos.distinct(),
+        'all_tags': Tag.objects.filter(user=request.user)
+    })
+
+def master_gallery(request):
+    # 1. Get all photos belonging to the user
+    photos = Photo.objects.filter(aquarium__user=request.user)
+    
+    # 2. Get the array of selected tag IDs from AJAX
+    tag_ids = request.GET.getlist('tags')
+    
+    if tag_ids:
+        # THE FIX: Use __in to find photos that have AT LEAST ONE of these tags
+        photos = photos.filter(tags__id__in=tag_ids).distinct()
+            
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+    
+    context = {
+        'photos': photos, # distinct() is already applied above!
+        'all_tags': Tag.objects.filter(user=request.user)
+    }
+    
+    if is_ajax:
+        return render(request, 'components/_gallery_grid.html', context)
+        
+    return render(request, 'aquariums/master_gallery.html', context)
+
+
+@login_required
+def delete_livestock_photo(request, aquarium_id, livestock_id, photo_id):
+    # Ensure the photo exists and belongs to the correct user
+    photo = get_object_or_404(Photo, pk=photo_id, livestock__user=request.user)
+    
+    if request.method == 'POST':
+        photo.delete()
+        
+    return redirect('aquariums:livestock_detail', aquarium_id=aquarium_id, livestock_id=livestock_id)
 
 
 @login_required
