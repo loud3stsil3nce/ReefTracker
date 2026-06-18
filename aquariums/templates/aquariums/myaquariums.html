@@ -1,0 +1,78 @@
+{% extends "base.html" %} 
+{% load crispy_forms_tags %}
+{% block title %}My Aquariums{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">My Aquariums</h1>
+            <p class="text-muted">Manage your tanks and track their health.</p>
+        </div>
+        <button onclick="toggleForm()" class="btn btn-primary">Add New Aquarium</button>
+    </div>
+
+    <div id="addAquarium" class="card shadow-sm p-4 mb-4 compact-card" style="display: none;">
+        <form method="POST" action="{% url 'aquariums:myaquariums' %}">
+            {% csrf_token %}
+            <h2 class="h5 mb-3">Register New Aquarium</h2>
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary mt-2">Register</button>
+        </form>
+    </div>
+
+    {% if aquariums %}
+    <div class="row g-4">
+        {% for aquarium in aquariums %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100 compact-card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">{{ aquarium.name }}</h5>
+                    <p class="card-text text-muted mb-1">Type: {{ aquarium.type }}</p>
+                    <p class="card-text text-muted">Size: {{ aquarium.size }}</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 d-flex gap-2">
+                    <a class="btn btn-primary flex-fill" href="{% url 'aquariums:aquariumview' aquarium.id %}">View</a>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ aquarium.id }}">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteModal{{ aquarium.id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content theme-bg"> <div class="modal-header border-0">
+                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete <strong>{{ aquarium.name }}</strong>? This action cannot be undone.
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form method="POST" action="{% url 'aquariums:deleteaquarium' aquarium.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <p class="text-muted">No aquariums found. Click "Add New Aquarium" to get started.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    function toggleForm() {
+        const formDiv = document.getElementById('addAquarium');
+        formDiv.style.display = formDiv.style.display === "none" ? "block" : "none";
+    }
+</script>
+{% endblock %}
