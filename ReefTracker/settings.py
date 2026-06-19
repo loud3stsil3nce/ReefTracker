@@ -169,6 +169,7 @@ AUTHENTICATION_BACKENDS = [
 
 # Registration Rules (Modern Syntax)
 ACCOUNT_LOGIN_METHODS = {'email', 'username'}
+ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 # mandatory

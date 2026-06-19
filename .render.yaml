@@ -3,7 +3,7 @@ services:
   - type: web
     name: reeftracker
     env: python    
-    rootDir: ReefTracker/ReefTracker
+    rootDir: .
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn ReefTracker.wsgi:application
 
