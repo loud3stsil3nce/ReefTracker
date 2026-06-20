@@ -20,6 +20,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(find_dotenv(filename=".env", usecwd=True))
 
+
+def normalize_database_url(url: str | None) -> str | None:
+    """Convert unsupported dj_database_url schemes to supported ones."""
+    if not url:
+        return url
+    return (
+        url.replace("postgresql+psycopg2://", "postgresql://")
+           .replace("postgres+psycopg2://", "postgres://")
+    )
+
+DATABASE_URL = normalize_database_url(os.environ.get("DATABASE_URL"))
+if DATABASE_URL is not None:
+    os.environ["DATABASE_URL"] = DATABASE_URL
+
 # ---------- Helpers ----------
 
 
