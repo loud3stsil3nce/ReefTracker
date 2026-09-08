@@ -52,13 +52,13 @@ DEBUG = os.environ.get("DEBUG", "0") in {"1", "true", "True"}
 # Allow localhost & Codespaces preview by default; override via env when deploying.
 ALLOWED_HOSTS = env_list(
     "ALLOWED_HOSTS",
-    "localhost,127.0.0.1,0.0.0.0,.app.github.dev",
+    "localhost,127.0.0.1,0.0.0.0,zenbook-server,100.115.220.54,.app.github.dev,*",
 )
 
 # Required for POST/CSRF on those hosts (Codespaces + local)
 CSRF_TRUSTED_ORIGINS = env_list(
     "CSRF_TRUSTED_ORIGINS",
-    "http://localhost:8000,http://127.0.0.1:8000,https://*.app.github.dev",
+    "http://localhost:8000,http://127.0.0.1:8000,http://zenbook-server:8000,http://100.115.220.54:8000,https://*.app.github.dev",
 )
 
 # ---------- Application definition ----------
